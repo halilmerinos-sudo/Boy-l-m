@@ -287,7 +287,7 @@
                     </button>
 
                     <button type="button" onclick="inputTus('0')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow col-span-2">0</button>
-                    <button type="button" onclick="inputTus('.')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">.</button>
+                    <button type="button" onclick="inputTus('.')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">./,</button>
                 </div>
 
                 <!-- EKSİK VARDİYA TAKİP PANELİ -->
@@ -481,7 +481,6 @@
                 activeUser = matchedUser.name; 
                 activeVardiya = vardiya;
                 
-                // YETKİ KONTROLÜ (Sadece Halil Kılıç admin sayılır)
                 isAdmin = (activeUser.toLocaleLowerCase('tr-TR') === "halil kılıç");
 
                 document.getElementById('p-info').innerHTML = `<i class="fa-solid fa-user-check mr-1 text-emerald-400"></i> ${activeUser}`;
@@ -490,7 +489,6 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-app').style.display = 'block';
                 
-                // Eğer admisse tablo başlığına Yönetici sütunu ekle
                 setupTableHeader();
                 tabloGuncelle();
                 calculateMissingDays();
@@ -509,7 +507,6 @@
 
         function setupTableHeader() {
             let header = document.getElementById("tabloHeader");
-            // Eski eklenmiş sütunları temizle
             let exCol = document.getElementById("adminHeaderCol");
             if(exCol) exCol.remove();
 
@@ -547,7 +544,12 @@
                 alert("Lütfen önce veri girmek istediğiniz bir ölçüm kutusuna tıklayın!");
                 return;
             }
-            if (deger === "." && seciliInput.value.includes(".")) return;
+            
+            // Eğer nokta butonuna basıldıysa kullanıcının alışkanlığına göre nokta veya virgül eklenmesini esnetiyoruz
+            if (deger === ".") {
+                if (seciliInput.value.includes(".") || seciliInput.value.includes(",")) return;
+            }
+            
             seciliInput.value += deger;
             seciliInput.focus();
             canliFarkHesapla();
@@ -560,9 +562,18 @@
             canliFarkHesapla();
         }
 
+        // VİRGÜLÜ NOKTAYA ÇEVİREREK GÜVENLİ SAYIYA DÖNÜŞTÜREN ÖZEL YARDIMCI FONKSİYON
+        function parseFlexibleFloat(valStr) {
+            if (!valStr) return NaN;
+            // İçindeki tüm virgülleri noktaya çeviriyoruz
+            let temizVal = valStr.toString().replace(/,/g, '.');
+            return parseFloat(temizVal);
+        }
+
         function canliFarkHesapla() {
-            const otoVal = parseFloat(document.getElementById("txtOtomasyonOlcum").value);
-            const kkVal = parseFloat(document.getElementById("txtKKOlcum").value);
+            // Arka planda virgüller noktaya elenerek hesaplanır
+            const otoVal = parseFlexibleFloat(document.getElementById("txtOtomasyonOlcum").value);
+            const kkVal = parseFlexibleFloat(document.getElementById("txtKKOlcum").value);
             const lbl = document.getElementById("lblCanliFark");
 
             if (!isNaN(otoVal) && !isNaN(kkVal)) {
@@ -692,13 +703,15 @@
                 return;
             }
 
-            const farkHesap = (parseFloat(kk) - parseFloat(otomasyon)).toFixed(2);
+            // Çıkarma işleminde esnek dönüştürme tetikleniyor
+            const numOto = parseFlexibleFloat(otomasyon);
+            const numKK = parseFlexibleFloat(kk);
+
+            const farkHesap = (numKK - numOto).toFixed(2);
             const isaret = farkHesap > 0 ? "+" : "";
             const farkSonuc = isaret + farkHesap;
 
-            // Güncelleme modunda mıyız, yeni kayıt mı?
             if(editIdx >= 0) {
-                // Sadece yönetici güncelleyebilir kontrolü (güvenlik)
                 if(!isAdmin) { alert("Yetkisiz İşlem!"); return; }
                 
                 db[editIdx].makina = makina;
@@ -739,7 +752,6 @@
             document.getElementById("date-warning-modal").classList.add("hidden");
         }
 
-        // SADECE HALİL KILIÇ İÇİN ÖZEL YÖNETİCİ FONKSİYONLARI
         function adminKayitSil(index) {
             if(!isAdmin) { alert("Bu işlemi yapmaya yetkiniz yok!"); return; }
             if(confirm("Bu ölçüm kaydını kalıcı olarak silmek istediğinize emin misiniz?")) {
@@ -781,9 +793,11 @@
                 const row = document.createElement("tr");
                 row.className = "bg-slate-800 border-b border-slate-700 hover:bg-slate-750 transition-colors";
                 
+                // Hücrelerdeki fark renk kontrolü için de esnek metot kullanılır
+                let numSonuc = parseFlexibleFloat(veri.sonuc);
                 let farkRengi = "text-slate-350";
-                if(parseFloat(veri.sonuc) > 0) farkRengi = "text-emerald-400 font-black";
-                else if(parseFloat(veri.sonuc) < 0) farkRengi = "text-rose-400 font-black";
+                if(numSonuc > 0) farkRengi = "text-emerald-400 font-black";
+                else if(numSonuc < 0) farkRengi = "text-rose-400 font-black";
 
                 let htmlContent = `
                     <td class="px-4 py-3 font-medium">${veri.tarih}</td>
