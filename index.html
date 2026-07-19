@@ -120,7 +120,7 @@
     <div id="login-screen">
         <div class="login-card" id="boxLogin">
             <h2 class="text-2xl font-bold mb-2 text-white tracking-wide">BOY OTOMASYON SİSTEMİ</h2>
-            <p class="text-slate-450 text-xs mb-6">Otomasyon Veritabanına Erişmek İçin Giriş Yapın</p>
+            <p class="text-slate-400 text-xs mb-6">Otomasyon Veritabanına Erişmek İçin Giriş Yapın</p>
             
             <div class="form-group">
                 <label>Personel Adı Soyadı</label>
@@ -149,7 +149,7 @@
 
         <div class="login-card" id="boxCrypto" style="display:none; max-width: 500px;">
             <h2 class="text-xl font-bold mb-2 text-white">Personel & Şifre Yönetimi</h2>
-            <p class="text-slate-450 text-xs mb-6">Sisteme yeni personel ekleme ve şifre belirleme alanı</p>
+            <p class="text-slate-400 text-xs mb-6">Sisteme yeni personel ekleme ve şifre belirleme alanı</p>
             
             <div class="form-group">
                 <label>Yönetici (Halil Kılıç) Şifresi</label>
@@ -289,6 +289,9 @@
                     <button type="button" onclick="inputTus('0')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow col-span-2">0</button>
                     <button type="button" onclick="inputTus('.')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">./,</button>
                 </div>
+                <button type="button" id="btnIptalDuzenle" onclick="iptalDuzenle()" class="hidden w-full bg-slate-600 hover:bg-slate-500 text-white font-bold py-2.5 rounded-lg shadow">
+                    <i class="fa-solid fa-xmark"></i> Düzenlemeyi İptal Et
+                </button>
 
                 <!-- EKSİK VARDİYA TAKİP PANELİ -->
                 <div class="bg-slate-700/60 p-4 rounded-xl border border-slate-600 text-center">
@@ -314,7 +317,7 @@
         </div>
 
         <!-- KAYIT GEÇMİŞİ -->
-        <div class="p-6 border-t border-slate-700 bg-slate-850">
+        <div class="p-6 border-t border-slate-700 bg-slate-900">
             <h3 class="text-md font-bold mb-3 text-slate-300 flex items-center gap-2">
                 <i class="fa-solid fa-clock-rotate-left text-blue-500"></i> Sistem Kayıt Geçmişi (Son Giriş En Üstte)
             </h3>
@@ -344,29 +347,66 @@
     </div>
 
     <script>
+        // Kayıtlar ve personel listesi orijinal koddaki gibi localStorage'da tutulur.
+        // Bu sayede tarayıcıda (Claude.ai önizlemesi DIŞINDA, yani indirip kendi
+        // tarayıcınızda/sunucunuzda açtığınızda) sayfa kapatılıp açılsa veya
+        // yenilense bile veriler kaybolmaz.
         var DB_KEY = 'BOY_OTOMASYON_V4_SHIFT_DB';
+        var USERS_KEY = 'system_users';
+
         var db = JSON.parse(localStorage.getItem(DB_KEY)) || [];
+        var usersCache = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
         var seciliInput = null;
         var activeUser = '';
         var activeVardiya = '';
         var geciciKayıtData = null;
-        var isAdmin = false; 
+        var isAdmin = false;
 
-        if(!localStorage.getItem('system_users')) {
-            let defaultUsers = [
+        if (!usersCache || usersCache.length === 0) {
+            usersCache = [
                 { name: "Halil Kılıç", pass: "210821", role: "admin" },
                 { name: "Erdi Çelebi", pass: "1234", role: "staff" }
             ];
-            localStorage.setItem('system_users', JSON.stringify(defaultUsers));
+            localStorage.setItem(USERS_KEY, JSON.stringify(usersCache));
+        }
+
+        function persistDB() {
+            localStorage.setItem(DB_KEY, JSON.stringify(db));
+        }
+
+        function persistUsers() {
+            localStorage.setItem(USERS_KEY, JSON.stringify(usersCache));
+        }
+
+        // Kısa bip sesi çalar (uyarı gösterildiğinde kullanılır)
+        function playAlertSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                [0, 0.28, 0.56].forEach(t => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = 880;
+                    gain.gain.value = 0.001;
+                    gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + t + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.18);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + t);
+                    osc.stop(ctx.currentTime + t + 0.2);
+                });
+            } catch (e) {
+                console.warn('Uyarı sesi çalınamadı:', e);
+            }
         }
 
         function getUsersFromStorage() {
-            return JSON.parse(localStorage.getItem('system_users')) || [];
+            return usersCache;
         }
 
         function getAdminPassword() {
             let users = getUsersFromStorage();
-            let adminUser = users.find(u => u.name.toLocaleLowerCase('tr-TR') === "halil kılıç");
+            let adminUser = users.find(u => u.role === "admin");
             return adminUser ? adminUser.pass : "210821";
         }
 
@@ -419,7 +459,7 @@
                 tr.appendChild(tdPass);
 
                 let tdAction = document.createElement('td');
-                if(user.name.toLocaleLowerCase('tr-TR') !== "halil kılıç") {
+                if(user.role !== "admin") {
                     let delBtn = document.createElement('button');
                     delBtn.className = "btn-danger";
                     delBtn.textContent = "Sil";
@@ -435,7 +475,7 @@
             });
         }
 
-        function addNewStaff() {
+        async function addNewStaff() {
             let nameInput = document.getElementById('newStaffName');
             let passInput = document.getElementById('newStaffPass');
             let name = nameInput.value.trim();
@@ -448,7 +488,8 @@
             if(exists) { alert("Bu personel ismi sistemde zaten kayıtlı!"); return; }
 
             users.push({ name: name, pass: pass, role: "staff" });
-            localStorage.setItem('system_users', JSON.stringify(users));
+            usersCache = users;
+            await persistUsers();
             
             alert(`Başarılı: ${name} personeli sisteme eklendi.`);
             nameInput.value = ""; passInput.value = "";
@@ -456,23 +497,32 @@
             populateLoginUsers();
         }
 
-        function removeStaff(index) {
+        async function removeStaff(index) {
             let users = getUsersFromStorage();
             let removedName = users[index].name;
+            if(users[index].role === "admin") {
+                alert("Yönetici hesabı silinemez!");
+                return;
+            }
             if(confirm(`${removedName} personelini silmek istediğinize emin misiniz?`)) {
                 users.splice(index, 1);
-                localStorage.setItem('system_users', JSON.stringify(users));
+                usersCache = users;
+                await persistUsers();
                 renderUserMgmtTable();
                 populateLoginUsers();
             }
         }
 
-        function tryLogin() {
+        async function tryLogin() {
             let user = document.getElementById('loginUser').value.trim();
             let vardiya = document.getElementById('loginVardiya').value.trim();
             let pass = document.getElementById('loginPass').value.trim();
             
             if(!user || !vardiya || !pass) { alert("Lütfen Kullanıcı, Vardiya ve Şifreyi eksiksiz seçip girin."); return; }
+
+            // Depodaki en güncel personel/kayıt verisini tazele
+            db = JSON.parse(localStorage.getItem(DB_KEY)) || db;
+            usersCache = JSON.parse(localStorage.getItem(USERS_KEY)) || usersCache;
 
             let users = getUsersFromStorage();
             let matchedUser = users.find(u => u.name.toLocaleLowerCase('tr-TR') === user.toLocaleLowerCase('tr-TR') && u.pass === pass);
@@ -481,7 +531,7 @@
                 activeUser = matchedUser.name; 
                 activeVardiya = vardiya;
                 
-                isAdmin = (activeUser.toLocaleLowerCase('tr-TR') === "halil kılıç");
+                isAdmin = (matchedUser.role === "admin");
 
                 document.getElementById('p-info').innerHTML = `<i class="fa-solid fa-user-check mr-1 text-emerald-400"></i> ${activeUser}`;
                 document.getElementById('v-info').innerHTML = `<i class="fa-solid fa-user-clock mr-1"></i> VARDİYA: ${activeVardiya}`;
@@ -521,6 +571,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             populateLoginUsers();
+
             document.getElementById("txtTarih").innerText = new Date().toLocaleDateString('tr-TR');
 
             const yazilabilirInputlar = [
@@ -663,9 +714,10 @@
                 </ul>
             `;
             modal.classList.remove("hidden");
+            playAlertSound();
         }
 
-        function formKaydet() {
+        async function formKaydet() {
             const elMakina = document.getElementById("cmbMakinaNo");
             const elKalite = document.getElementById("txtKalite");
             const elEbat = document.getElementById("txtEbat");
@@ -721,14 +773,14 @@
                 db[editIdx].kk = kk;
                 db[editIdx].sonuc = farkSonuc;
 
-                localStorage.setItem(DB_KEY, JSON.stringify(db));
+                await persistDB();
                 alert("Kayıt başarıyla güncellendi.");
                 document.getElementById("editIndex").value = "-1";
                 document.getElementById("lblOkButton").textContent = "OK";
             } else {
                 geciciKayıtData = { tarih, vardiya: activeVardiya, makina, personel: activeUser, kalite, ebat, otomasyon, kk, sonuc: farkSonuc };
                 db.unshift(geciciKayıtData);
-                localStorage.setItem(DB_KEY, JSON.stringify(db));
+                await persistDB();
                 alert("Ölçüm kaydı ilgili vardiyaya başarıyla işlendi.");
             }
 
@@ -746,17 +798,32 @@
             if (seciliInput) seciliInput.classList.remove("focused-input");
             seciliInput = null;
             geciciKayıtData = null;
+            document.getElementById("btnIptalDuzenle").classList.add("hidden");
+        }
+
+        function iptalDuzenle() {
+            document.getElementById("editIndex").value = "-1";
+            document.getElementById("lblOkButton").textContent = "OK";
+            document.getElementById("btnIptalDuzenle").classList.add("hidden");
+
+            document.getElementById("cmbMakinaNo").value = "";
+            document.getElementById("txtKalite").value = "";
+            document.getElementById("txtEbat").value = "";
+            document.getElementById("txtOtomasyonOlcum").value = "";
+            document.getElementById("txtKKOlcum").value = "";
+            document.getElementById("lblCanliFark").innerText = "---";
+            document.getElementById("lblCanliFark").className = "text-base font-black text-slate-400";
         }
 
         function closeWarningModal() {
             document.getElementById("date-warning-modal").classList.add("hidden");
         }
 
-        function adminKayitSil(index) {
+        async function adminKayitSil(index) {
             if(!isAdmin) { alert("Bu işlemi yapmaya yetkiniz yok!"); return; }
             if(confirm("Bu ölçüm kaydını kalıcı olarak silmek istediğinize emin misiniz?")) {
                 db.splice(index, 1);
-                localStorage.setItem(DB_KEY, JSON.stringify(db));
+                await persistDB();
                 tabloGuncelle();
                 calculateMissingDays();
             }
@@ -773,6 +840,7 @@
             document.getElementById("txtKKOlcum").value = veri.kk;
             document.getElementById("editIndex").value = index;
             document.getElementById("lblOkButton").textContent = "GÜNCELLE";
+            document.getElementById("btnIptalDuzenle").classList.remove("hidden");
             
             canliFarkHesapla();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -791,11 +859,11 @@
 
             db.forEach((veri, index) => {
                 const row = document.createElement("tr");
-                row.className = "bg-slate-800 border-b border-slate-700 hover:bg-slate-750 transition-colors";
+                row.className = "bg-slate-800 border-b border-slate-700 hover:bg-slate-700 transition-colors";
                 
                 // Hücrelerdeki fark renk kontrolü için de esnek metot kullanılır
                 let numSonuc = parseFlexibleFloat(veri.sonuc);
-                let farkRengi = "text-slate-350";
+                let farkRengi = "text-slate-300";
                 if(numSonuc > 0) farkRengi = "text-emerald-400 font-black";
                 else if(numSonuc < 0) farkRengi = "text-rose-400 font-black";
 
