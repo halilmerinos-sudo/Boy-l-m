@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boy Otomasyon Ölçüm Kayıt Formu</title>
     <!-- Tailwind CSS ve FontAwesome İkonları -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -97,11 +97,36 @@
         }
 
         #main-app { display: none; }
+
+        /* TOAST BİLDİRİM ANİMASYONLARI */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .toast-enter { animation: slideIn 0.3s ease-out forwards; }
+        .toast-exit { animation: fadeOut 0.3s ease-in forwards; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 p-4 min-h-screen flex items-center justify-center">
+<body class="bg-slate-900 text-slate-100 p-4 min-h-screen flex items-center justify-center relative overflow-x-hidden">
 
-    <!-- UYARI PENCERESİ (MODAL) -->
+    <!-- DİNAMİK TOAST BİLDİRİM ALANI (SAĞ ÜST KÖŞE) -->
+    <div id="toast-container" class="fixed top-5 right-5 z-[3000] flex flex-col gap-3 w-full max-w-sm pointer-events-none"></div>
+
+    <!-- ANİMASYONLU MODAL (DİALOG) UYARI PENCERESİ -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/80 z-[2500] flex items-center justify-center p-4 hidden transition-all duration-300">
+        <div id="modal-card" class="bg-slate-800 border-2 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl transform scale-75 opacity-0 transition-all duration-300">
+            <div id="modal-icon" class="w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 animate-bounce"></div>
+            <h2 id="modal-title" class="text-2xl font-black tracking-wide uppercase mb-3"></h2>
+            <div id="modal-content" class="text-slate-200 text-base space-y-3 font-medium text-center bg-slate-900/50 p-5 rounded-2xl border border-slate-700"></div>
+            <button onclick="closeCustomModal()" id="modal-btn" class="mt-6 w-full font-extrabold text-lg py-3.5 rounded-xl shadow-lg transition-all"></button>
+        </div>
+    </div>
+
+    <!-- EKSİK VARDİYA UYARI PENCERESİ (MODAL) -->
     <div id="date-warning-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-800 border-2 border-amber-500 rounded-3xl p-8 max-w-xl w-full text-center shadow-2xl transform scale-100 transition-all">
             <div class="w-20 h-20 bg-amber-500/10 border-2 border-amber-500 text-amber-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 animate-pulse">
@@ -334,7 +359,6 @@
                             <th class="px-4 py-3 text-center">Oto. Ölçüm</th>
                             <th class="px-4 py-3 text-center">K.K Ölçüm</th>
                             <th class="px-4 py-3 text-center bg-indigo-900/40 text-cyan-300">Sonuç (Fark)</th>
-                            <!-- Yetkili sütunu dinamik eklenecek -->
                         </tr>
                     </thead>
                     <tbody id="veriTablosu" class="divide-y divide-slate-700 text-center">
@@ -347,10 +371,6 @@
     </div>
 
     <script>
-        // Kayıtlar ve personel listesi orijinal koddaki gibi localStorage'da tutulur.
-        // Bu sayede tarayıcıda (Claude.ai önizlemesi DIŞINDA, yani indirip kendi
-        // tarayıcınızda/sunucunuzda açtığınızda) sayfa kapatılıp açılsa veya
-        // yenilense bile veriler kaybolmaz.
         var DB_KEY = 'BOY_OTOMASYON_V4_SHIFT_DB';
         var USERS_KEY = 'system_users';
 
@@ -370,6 +390,89 @@
             localStorage.setItem(USERS_KEY, JSON.stringify(usersCache));
         }
 
+        // --- MODERN BİLDİRİM VE MODAL MOTORU ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bg = 'bg-slate-800 border-slate-700';
+            let icon = '<i class="fa-solid fa-circle-info text-blue-400"></i>';
+            
+            if (type === 'success') {
+                bg = 'bg-emerald-950/90 border-emerald-500 text-emerald-200';
+                icon = '<i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>';
+            } else if (type === 'error') {
+                bg = 'bg-rose-950/90 border-rose-500 text-rose-200';
+                icon = '<i class="fa-solid fa-circle-xmark text-rose-400 text-lg"></i>';
+            } else if (type === 'warning') {
+                bg = 'bg-amber-950/90 border-amber-500 text-amber-200';
+                icon = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-lg"></i>';
+            }
+
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-2xl text-sm font-semibold toast-enter ${bg}`;
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-exit');
+                toast.addEventListener('animationend', () => toast.remove());
+            }, 3500);
+        }
+
+        function showCustomModal(title, contentHtml, type = 'info', btnText = 'TAMAM') {
+            const modal = document.getElementById('custom-modal');
+            const card = document.getElementById('modal-card');
+            const iconBox = document.getElementById('modal-icon');
+            const titleEl = document.getElementById('modal-title');
+            const contentEl = document.getElementById('modal-content');
+            const btnEl = document.getElementById('modal-btn');
+
+            titleEl.innerText = title;
+            contentEl.innerHTML = contentHtml;
+            btnEl.innerText = btnText;
+
+            // Tip stillerini temizle ve ata
+            iconBox.className = "w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 animate-bounce";
+            
+            if (type === 'success') {
+                card.className = "bg-slate-800 border-2 border-emerald-500 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl transform transition-all duration-300 scale-75 opacity-0";
+                iconBox.classList.add("bg-emerald-500/10", "border-2", "border-emerald-500", "text-emerald-400");
+                iconBox.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                titleEl.className = "text-2xl font-black text-emerald-400 tracking-wide uppercase mb-3";
+                btnEl.className = "mt-6 w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-lg py-3.5 rounded-xl shadow-lg transition-all";
+            } else if (type === 'error') {
+                card.className = "bg-slate-800 border-2 border-rose-500 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl transform transition-all duration-300 scale-75 opacity-0";
+                iconBox.classList.add("bg-rose-500/10", "border-2", "border-rose-500", "text-rose-400");
+                iconBox.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+                titleEl.className = "text-2xl font-black text-rose-400 tracking-wide uppercase mb-3";
+                btnEl.className = "mt-6 w-full bg-rose-500 hover:bg-rose-400 text-white font-extrabold text-lg py-3.5 rounded-xl shadow-lg transition-all";
+            } else {
+                card.className = "bg-slate-800 border-2 border-cyan-500 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl transform transition-all duration-300 scale-75 opacity-0";
+                iconBox.classList.add("bg-cyan-500/10", "border-2", "border-cyan-500", "text-cyan-400");
+                iconBox.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+                titleEl.className = "text-2xl font-black text-cyan-400 tracking-wide uppercase mb-3";
+                btnEl.className = "mt-6 w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-lg py-3.5 rounded-xl shadow-lg transition-all";
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-75', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 50);
+
+            playAlertSound();
+        }
+
+        function closeCustomModal() {
+            const modal = document.getElementById('custom-modal');
+            const card = document.getElementById('modal-card');
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-75', 'opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
+
         function persistDB() {
             localStorage.setItem(DB_KEY, JSON.stringify(db));
         }
@@ -378,7 +481,6 @@
             localStorage.setItem(USERS_KEY, JSON.stringify(usersCache));
         }
 
-        // Kısa bip sesi çalar (uyarı gösterildiğinde kullanılır)
         function playAlertSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -438,8 +540,9 @@
             if(hkPass === adminPass) {
                 document.getElementById('adminManagementArea').style.display = 'block';
                 renderUserMgmtTable();
+                showToast("Yönetici yetkilendirmesi başarılı.", "success");
             } else {
-                alert("Hata: Halil Kılıç yetki şifresi yanlış!");
+                showToast("Hata: Halil Kılıç yetki şifresi yanlış!", "error");
                 document.getElementById('adminManagementArea').style.display = 'none';
             }
         }
@@ -475,52 +578,56 @@
             });
         }
 
-        async function addNewStaff() {
+        function addNewStaff() {
             let nameInput = document.getElementById('newStaffName');
             let passInput = document.getElementById('newStaffPass');
             let name = nameInput.value.trim();
             let pass = passInput.value.trim();
 
-            if(!name || !pass) { alert("Lütfen personel adını ve şifresini doldurun!"); return; }
+            if(!name || !pass) { showToast("Lütfen personel adını ve şifresini doldurun!", "warning"); return; }
 
             let users = getUsersFromStorage();
             let exists = users.some(u => u.name.toLocaleLowerCase('tr-TR') === name.toLocaleLowerCase('tr-TR'));
-            if(exists) { alert("Bu personel ismi sistemde zaten kayıtlı!"); return; }
+            if(exists) { showToast("Bu personel ismi sistemde zaten kayıtlı!", "error"); return; }
 
             users.push({ name: name, pass: pass, role: "staff" });
             usersCache = users;
-            await persistUsers();
+            persistUsers();
             
-            alert(`Başarılı: ${name} personeli sisteme eklendi.`);
+            showToast(`${name} personeli sisteme başarıyla eklendi.`, "success");
             nameInput.value = ""; passInput.value = "";
             renderUserMgmtTable();
             populateLoginUsers();
         }
 
-        async function removeStaff(index) {
+        function removeStaff(index) {
             let users = getUsersFromStorage();
             let removedName = users[index].name;
             if(users[index].role === "admin") {
-                alert("Yönetici hesabı silinemez!");
+                showToast("Yönetici hesabı silinemez!", "error");
                 return;
             }
-            if(confirm(`${removedName} personelini silmek istediğinize emin misiniz?`)) {
+            
+            // Silme onayını modern modal ile yapıyoruz
+            showCustomModal("PERSONEL SİLME ONAYI", `<strong>${removedName}</strong> isimli personeli kalıcı olarak silmek istediğinize emin misiniz?`, "error", "EVET, SİL");
+            document.getElementById('modal-btn').onclick = function() {
                 users.splice(index, 1);
                 usersCache = users;
-                await persistUsers();
+                persistUsers();
                 renderUserMgmtTable();
                 populateLoginUsers();
-            }
+                closeCustomModal();
+                showToast("Personel başarıyla silindi.", "success");
+            };
         }
 
-        async function tryLogin() {
+        function tryLogin() {
             let user = document.getElementById('loginUser').value.trim();
             let vardiya = document.getElementById('loginVardiya').value.trim();
             let pass = document.getElementById('loginPass').value.trim();
             
-            if(!user || !vardiya || !pass) { alert("Lütfen Kullanıcı, Vardiya ve Şifreyi eksiksiz seçip girin."); return; }
+            if(!user || !vardiya || !pass) { showToast("Lütfen Kullanıcı, Vardiya ve Şifreyi eksiksiz seçip girin.", "warning"); return; }
 
-            // Depodaki en güncel personel/kayıt verisini tazele
             db = JSON.parse(localStorage.getItem(DB_KEY)) || db;
             usersCache = JSON.parse(localStorage.getItem(USERS_KEY)) || usersCache;
 
@@ -542,6 +649,7 @@
                 setupTableHeader();
                 tabloGuncelle();
                 calculateMissingDays();
+                showToast(`Hoş geldiniz, ${activeUser}!`, "success");
                 
                 if (!sessionStorage.getItem('first_login_warning_shown')) {
                     const gapStatus = checkDateAndShiftGap();
@@ -551,7 +659,7 @@
                     }
                 }
             } else {
-                alert("Hatalı kullanıcı adı veya şifre!");
+                showToast("Hatalı kullanıcı adı veya şifre!", "error");
             }
         }
 
@@ -592,13 +700,14 @@
 
         function inputTus(deger) {
             if (!seciliInput) {
-                alert("Lütfen önce veri girmek istediğiniz bir ölçüm kutusuna tıklayın!");
+                showToast("Lütfen önce veri girmek istediğiniz bir ölçüm kutusuna tıklayın!", "warning");
                 return;
             }
             
-            // Eğer nokta butonuna basıldıysa kullanıcının alışkanlığına göre nokta veya virgül eklenmesini esnetiyoruz
             if (deger === ".") {
-                if (seciliInput.value.includes(".") || seciliInput.value.includes(",")) return;
+                if (seciliInput.id === "txtOtomasyonOlcum" || seciliInput.id === "txtKKOlcum") {
+                    if (seciliInput.value.includes(".") || seciliInput.value.includes(",")) return;
+                }
             }
             
             seciliInput.value += deger;
@@ -613,28 +722,28 @@
             canliFarkHesapla();
         }
 
-        // VİRGÜLÜ NOKTAYA ÇEVİREREK GÜVENLİ SAYIYA DÖNÜŞTÜREN ÖZEL YARDIMCI FONKSİYON
         function parseFlexibleFloat(valStr) {
             if (!valStr) return NaN;
-            // İçindeki tüm virgülleri noktaya çeviriyoruz
             let temizVal = valStr.toString().replace(/,/g, '.');
             return parseFloat(temizVal);
         }
 
         function canliFarkHesapla() {
-            // Arka planda virgüller noktaya elenerek hesaplanır
             const otoVal = parseFlexibleFloat(document.getElementById("txtOtomasyonOlcum").value);
             const kkVal = parseFlexibleFloat(document.getElementById("txtKKOlcum").value);
             const lbl = document.getElementById("lblCanliFark");
 
             if (!isNaN(otoVal) && !isNaN(kkVal)) {
-                const fark = (kkVal - otoVal).toFixed(2);
-                const isaret = fark > 0 ? "+" : ""; 
+                let farkVal = kkVal - otoVal;
+                if (Math.abs(farkVal) < 0.0001) farkVal = 0; 
+                
+                const fark = farkVal.toFixed(2);
+                const isaret = farkVal > 0 ? "+" : ""; 
                 lbl.innerText = isaret + fark + " cm";
                 
-                if (fark == 0) {
+                if (farkVal === 0) {
                     lbl.className = "text-base font-black text-emerald-400";
-                } else if (Math.abs(fark) <= 1) {
+                } else if (Math.abs(farkVal) <= 1) {
                     lbl.className = "text-base font-black text-yellow-400";
                 } else {
                     lbl.className = "text-base font-black text-rose-400";
@@ -717,7 +826,7 @@
             playAlertSound();
         }
 
-        async function formKaydet() {
+        function formKaydet() {
             const elMakina = document.getElementById("cmbMakinaNo");
             const elKalite = document.getElementById("txtKalite");
             const elEbat = document.getElementById("txtEbat");
@@ -751,20 +860,21 @@
             });
 
             if (eksikVar) {
-                alert("Lütfen sarı renkle yanıp sönen boş alanları doldurunuz!");
+                showToast("Lütfen sarı renkle yanıp sönen boş alanları doldurunuz!", "warning");
                 return;
             }
 
-            // Çıkarma işleminde esnek dönüştürme tetikleniyor
             const numOto = parseFlexibleFloat(otomasyon);
             const numKK = parseFlexibleFloat(kk);
+            let farkVal = numKK - numOto;
+            if (Math.abs(farkVal) < 0.0001) farkVal = 0;
 
-            const farkHesap = (numKK - numOto).toFixed(2);
-            const isaret = farkHesap > 0 ? "+" : "";
+            const farkHesap = farkVal.toFixed(2);
+            const isaret = farkVal > 0 ? "+" : "";
             const farkSonuc = isaret + farkHesap;
 
             if(editIdx >= 0) {
-                if(!isAdmin) { alert("Yetkisiz İşlem!"); return; }
+                if(!isAdmin) { showToast("Yetkisiz İşlem!", "error"); return; }
                 
                 db[editIdx].makina = makina;
                 db[editIdx].kalite = kalite;
@@ -773,15 +883,15 @@
                 db[editIdx].kk = kk;
                 db[editIdx].sonuc = farkSonuc;
 
-                await persistDB();
-                alert("Kayıt başarıyla güncellendi.");
+                persistDB();
+                showCustomModal("BAŞARILI", `Ölçüm kaydı güncellendi.<br><span class="text-cyan-400 font-bold">${makina} - ${kalite}</span>`, "success", "KAPAT");
                 document.getElementById("editIndex").value = "-1";
                 document.getElementById("lblOkButton").textContent = "OK";
             } else {
                 geciciKayıtData = { tarih, vardiya: activeVardiya, makina, personel: activeUser, kalite, ebat, otomasyon, kk, sonuc: farkSonuc };
                 db.unshift(geciciKayıtData);
-                await persistDB();
-                alert("Ölçüm kaydı ilgili vardiyaya başarıyla işlendi.");
+                persistDB();
+                showCustomModal("KAYIT BAŞARILI", `Ölçüm verisi sisteme başarıyla işlendi.<br><span class="text-cyan-400 font-bold">${makina} - ${kalite}</span>`, "success", "DEVAM ET");
             }
 
             tabloGuncelle();
@@ -813,24 +923,29 @@
             document.getElementById("txtKKOlcum").value = "";
             document.getElementById("lblCanliFark").innerText = "---";
             document.getElementById("lblCanliFark").className = "text-base font-black text-slate-400";
+            showToast("Düzenleme iptal edildi.", "info");
         }
 
         function closeWarningModal() {
             document.getElementById("date-warning-modal").classList.add("hidden");
         }
 
-        async function adminKayitSil(index) {
-            if(!isAdmin) { alert("Bu işlemi yapmaya yetkiniz yok!"); return; }
-            if(confirm("Bu ölçüm kaydını kalıcı olarak silmek istediğinize emin misiniz?")) {
+        function adminKayitSil(index) {
+            if(!isAdmin) { showToast("Bu işlemi yapmaya yetkiniz yok!", "error"); return; }
+            
+            showCustomModal("KAYIT SİLME ONAYI", `Bu ölçüm kaydını kalıcı olarak silmek istediğinize emin misiniz?`, "error", "EVET, KESİN SİL");
+            document.getElementById('modal-btn').onclick = function() {
                 db.splice(index, 1);
-                await persistDB();
+                persistDB();
                 tabloGuncelle();
                 calculateMissingDays();
-            }
+                closeCustomModal();
+                showToast("Ölçüm kaydı sistemden kalıcı olarak silindi.", "success");
+            };
         }
 
         function adminKayitDuzenle(index) {
-            if(!isAdmin) { alert("Bu işlemi yapmaya yetkiniz yok!"); return; }
+            if(!isAdmin) { showToast("Bu işlemi yapmaya yetkiniz yok!", "error"); return; }
             const veri = db[index];
             
             document.getElementById("cmbMakinaNo").value = veri.makina;
@@ -844,7 +959,8 @@
             
             canliFarkHesapla();
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            alert("Kayıt verileri düzenleme modunda forma yüklendi. Değişiklikleri yapıp yeşil OK (GÜNCELLE) tuşuna basınız.");
+            
+            showCustomModal("DÜZENLEME MODU", "Kayıt verileri forma yüklendi. Değişiklikleri yapıp yeşil <strong>OK (GÜNCELLE)</strong> tuşuna basınız.", "info", "FORMA GİT");
         }
 
         function tabloGuncelle() {
@@ -861,7 +977,6 @@
                 const row = document.createElement("tr");
                 row.className = "bg-slate-800 border-b border-slate-700 hover:bg-slate-700 transition-colors";
                 
-                // Hücrelerdeki fark renk kontrolü için de esnek metot kullanılır
                 let numSonuc = parseFlexibleFloat(veri.sonuc);
                 let farkRengi = "text-slate-300";
                 if(numSonuc > 0) farkRengi = "text-emerald-400 font-black";
@@ -895,7 +1010,7 @@
 
         function excelIndir() {
             if (db.length === 0) {
-                alert("İndirilecek herhangi bir rapor verisi bulunamadı!");
+                showToast("İndirilecek herhangi bir rapor verisi bulunamadı!", "warning");
                 return;
             }
 
@@ -918,23 +1033,8 @@
                 </xml>
                 <![endif]-->
                 <style>
-                    .th-stil {
-                        font-size: 13pt !important;
-                        font-weight: bold;
-                        background-color: #1E3A8A;
-                        color: #FFFFFF;
-                        text-align: center !important;
-                        vertical-align: middle;
-                        height: 38px;
-                        border: 1px solid #334155;
-                    }
-                    .td-stil {
-                        font-size: 11pt;
-                        text-align: center !important;
-                        vertical-align: middle;
-                        height: 28px;
-                        border: 0.5px solid #CBD5E1;
-                    }
+                    .th-stil { font-size: 13pt !important; font-weight: bold; background-color: #1E3A8A; color: #FFFFFF; text-align: center !important; vertical-align: middle; height: 38px; border: 1px solid #334155; }
+                    .td-stil { font-size: 11pt; text-align: center !important; vertical-align: middle; height: 28px; border: 0.5px solid #CBD5E1; }
                 </style>
             </head>
             <body>
@@ -978,7 +1078,7 @@
             </html>
             `;
 
-            const blob = new Blob([excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+            const blob = new Blob(['\ufeff' + excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8;' });
             const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
             
@@ -990,6 +1090,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            showToast("Excel raporu indirildi.", "success");
         }
     </script>
 </body>
