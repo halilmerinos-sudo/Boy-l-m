@@ -83,7 +83,6 @@
             color: #0F172A !important;
         }
 
-        /* YANIP SÖNME ANİMASYONU */
         @keyframes flash-yellow {
             0%, 100% { background-color: #334155; border-color: #475569; color: white; }
             50% { background-color: #FEF08A; border-color: #EAB308; color: #0F172A; }
@@ -208,8 +207,8 @@
                 <label>Çalışma Vardiyası</label>
                 <select id="loginVardiya" class="w-full text-white rounded-lg p-2.5 outline-none border border-slate-600">
                     <option value="">-- Vardiya Seçiniz --</option>
-                    <option value="08/16">08/16 Vardiyası</option>
-                    <option value="16/00">16/00 Vardiyası</option>
+                    <option value="08/16 (A) VARDİYASI">08/16 (A) VARDİYASI</option>
+                    <option value="16/00 (B) VARDİYASI">16/00 (B) VARDİYASI</option>
                 </select>
             </div>
             
@@ -218,7 +217,6 @@
                 <input type="password" id="loginPass" class="input-box" placeholder="••••" readonly>
             </div>
 
-            <!-- GİRİŞ EKRANI SANAL TUŞ TAKIMI (GÖRSELDEKİ TASARIM) -->
             <div class="grid grid-cols-4 gap-2 bg-slate-900/80 p-3 rounded-xl border border-slate-700/60 my-3">
                 <button type="button" onclick="loginTus('7')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">7</button>
                 <button type="button" onclick="loginTus('8')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">8</button>
@@ -323,8 +321,8 @@
                     <input type="text" id="txtKalite" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white focus:outline-none transition-all" placeholder="Halı kalitesini yazınız...">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold mb-1 text-slate-300">EBAT BİLGİSİ:</label>
-                    <input type="text" id="txtEbat" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white focus:outline-none transition-all" placeholder="Değer yazın veya tuşlayın...">
+                    <label class="block text-sm font-semibold mb-1 text-slate-300">EBAT BİLGİSİ (CM):</label>
+                    <input type="text" id="txtEbat" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white focus:outline-none transition-all" placeholder="Değer yazın veya tuşlayın (Sadece sayı)..." oninput="validateSadeceSayi(this)">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-slate-300">OTOMASYON ÖLÇÜM CM:</label>
@@ -409,15 +407,16 @@
         var DB_KEY = 'BOY_OTOMASYON_V4_SHIFT_DB';
         var USERS_KEY = 'system_users';
 
+        // Varsayılan kayıtlar yeni güvenli format ile güncellendi.
         var varsayilanKayıtlar = [
-            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 2", personel: "HALİL KILIÇ", kalite: "yjt", ebat: "y", otomasyon: 25, kk: 26, fark: "-1.00 CM" },
-            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 1", personel: "HALİL KILIÇ", kalite: "üo", ebat: "ıup", otomasyon: 25, kk: 26, fark: "-1.00 CM" },
-            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 2", personel: "Halil Kılıç", kalite: "tuutı", ebat: "utıp", otomasyon: 25, kk: 26, fark: "-1.00 CM" },
-            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 2", personel: "HALİL KILIÇ", kalite: "safir", ebat: "j", otomasyon: 26, kk: 25, fark: "1.00 CM" },
-            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 2", personel: "HALİL KILIÇ", kalite: "kj", ebat: "25", otomasyon: 25, kk: 20, fark: "5.00 CM" },
-            { tarih: "20.07.2026", vardiya: "16/00", makina: "Makina 2", personel: "Halil Kılıç", kalite: "gf", ebat: "80", otomasyon: 25, kk: 25, fark: "0.00 CM" },
-            { tarih: "18.07.2026", vardiya: "16/00", makina: "Makina 2", personel: "Halil Kılıç", kalite: "HG", ebat: "100", otomasyon: 28, kk: 50, fark: "-22.00 CM" },
-            { tarih: "18.07.2026", vardiya: "16/00", makina: "Makina 1", personel: "Halil Kılıç", kalite: "SAF", ebat: "80", otomasyon: 25, kk: 28, fark: "-3.00 CM" }
+            { tarih: "20.07.2026", vardiya: "08/16 (A) VARDİYASI", makina: "Makina 2", personel: "HALİL KILIÇ", kalite: "gold", ebat: 200, otomasyon: 28, kk: 28, fark: "0.00 CM" },
+            { tarih: "20.07.2026", vardiya: "08/16 (A) VARDİYASI", makina: "Makina 1", personel: "HALİL KILIÇ", kalite: "sarar", ebat: 200, otomasyon: 23, kk: 22, fark: "1.00 CM" },
+            { tarih: "20.07.2026", vardiya: "08/16 (A) VARDİYASI", makina: "Makina 1", personel: "HALİL KILIÇ", kalite: "yj", ebat: 100, otomasyon: 26, kk: 28, fark: "-2.00 CM" },
+            { tarih: "20.07.2026", vardiya: "08/16 (A) VARDİYASI", makina: "Makina 4", personel: "HALİL KILIÇ", kalite: "hkh", ebat: 80, otomasyon: 26, kk: 28, fark: "-2.00 CM" },
+            { tarih: "20.07.2026", vardiya: "16/00 (B) VARDİYASI", makina: "Makina 2", personel: "HALİL KILIÇ", kalite: "uk", ebat: 120, otomasyon: 25, kk: 26, fark: "-1.00 CM" },
+            { tarih: "20.07.2026", vardiya: "08/16 (A) VARDİYASI", makina: "Makina 2", personel: "HALİL KILIÇ", kalite: "guig", ebat: 150, otomasyon: 25, kk: 28, fark: "-3.00 CM" },
+            { tarih: "18.07.2026", vardiya: "16/00 (B) VARDİYASI", makina: "Makina 2", personel: "Halil Kılıç", kalite: "HG", ebat: 100, otomasyon: 28, kk: 50, fark: "-22.00 CM" },
+            { tarih: "18.07.2026", vardiya: "16/00 (B) VARDİYASI", makina: "Makina 1", personel: "Halil Kılıç", kalite: "SAF", ebat: 80, otomasyon: 25, kk: 28, fark: "-3.00 CM" }
         ];
 
         var db = JSON.parse(localStorage.getItem(DB_KEY)) || varsayilanKayıtlar;
@@ -469,7 +468,6 @@
             } catch (e) { console.log(e); }
         }
 
-        // GİRİŞ EKRANI İÇİN SANAL TUŞ TAKIMI FONKSİYONLARI
         function loginTus(deger) {
             let pField = document.getElementById('loginPass');
             pField.value += deger;
@@ -540,12 +538,13 @@
 
             testDates.forEach(d => {
                 let dayRecords = db.filter(r => r.tarih.replace(/\//g, '.') === d);
-                let hasShift1 = dayRecords.some(r => r.vardiya === "08/16");
-                let hasShift2 = dayRecords.some(r => r.vardiya === "16/00");
+                // Yeni vardiya isimlendirme formatına uygun olarak kontrol ediliyor
+                let hasShift1 = dayRecords.some(r => r.vardiya.includes("08/16"));
+                let hasShift2 = dayRecords.some(r => r.vardiya.includes("16/00"));
                 if(!hasShift1 || !hasShift2) {
                     let eksikler = [];
-                    if(!hasShift1) eksikler.push("08/16");
-                    if(!hasShift2) eksikler.push("16/00");
+                    if(!hasShift1) eksikler.push("08/16 (A)");
+                    if(!hasShift2) eksikler.push("16/00 (B)");
                     missingReports.push(`Satır: <strong>${d}</strong> -> Eksik: ${eksikler.join(" ve ")}`);
                 }
             });
@@ -627,7 +626,6 @@
             }
         }
 
-        // FİLTRELENEN VERİLERİ DÖNDÜRÜR
         function getFiltreliKayıtlar() {
             if(seciliFiltreAy === null || !seciliFiltreHafta) return [];
             return db.filter(item => {
@@ -669,19 +667,22 @@
             }
 
             filtreli.forEach(item => {
+                let oto = parseFloat(String(item.otomasyon).replace(',', '.')) || 0;
+                let kkVal = parseFloat(String(item.kk).replace(',', '.')) || 0;
+                let hesaplanmisFark = (oto - kkVal).toFixed(2) + " CM";
+
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="p-2 border border-slate-800">${item.tarih}</td>
-                    <td class="p-2 border border-slate-800 text-yellow-400">${item.vardiya}</td>
+                    <td class="p-2 border border-slate-800 text-yellow-400 text-xs">${item.vardiya}</td>
                     <td class="p-2 border border-slate-800">${item.makina}</td>
                     <td class="p-2 border border-slate-800 font-bold">${item.kalite}</td>
-                    <td class="p-2 border border-slate-800 font-mono">${item.fark}</td>
+                    <td class="p-2 border border-slate-800 font-mono">${hesaplanmisFark}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // GERÇEK EXCEL DOSYASI OLUŞTURMA VE İNDİRME MOTORU
         function tetikleyinExcelIndir() {
             let liste = getFiltreliKayıtlar();
             if (liste.length === 0) {
@@ -689,10 +690,25 @@
                 return;
             }
             
-            // Excel HTML Şablonu Oluşturma (CSS İçeren Gerçek Excel Formatı)
             let excelHtml = `
             <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-            <head><meta charset="utf-8"></head>
+            <head>
+                <meta charset="utf-8">
+                <!--[if gte mso 9]>
+                <xml>
+                    <x:ExcelWorkbook>
+                        <x:ExcelWorksheets>
+                            <x:ExcelWorksheet>
+                                <x:Name>Rapor</x:Name>
+                                <x:WorksheetOptions>
+                                    <x:DisplayGridlines/>
+                                </x:WorksheetOptions>
+                            </x:ExcelWorksheet>
+                        </x:ExcelWorksheets>
+                    </x:ExcelWorkbook>
+                </xml>
+                <![endif]-->
+            </head>
             <body>
                 <table border="1">
                     <tr style="background-color: #1E293B; color: #FFFFFF; font-weight: bold; text-align: center;">
@@ -709,24 +725,29 @@
             `;
             
             liste.forEach(item => {
+                let oto = parseFloat(String(item.otomasyon).replace(',', '.')) || 0;
+                let kkVal = parseFloat(String(item.kk).replace(',', '.')) || 0;
+                let ebatVal = parseFloat(String(item.ebat).replace(',', '.')) || 0;
+                let hesaplanmisFark = (oto - kkVal).toFixed(2) + " CM";
+
+                // Hücreye açık metin formatı verildi, Excel artık kesinlikle değiştiremeyecek.
                 excelHtml += `
                     <tr style="text-align: center;">
                         <td>${item.tarih}</td>
-                        <td style="background-color: #FEF08A; font-weight:bold;">${item.vardiya}</td>
+                        <td style="background-color: #FEF08A; font-weight:bold; mso-number-format:'\\@';">${item.vardiya}</td>
                         <td>${item.makina}</td>
                         <td>${item.personel}</td>
                         <td>${item.kalite}</td>
-                        <td>${item.ebat}</td>
-                        <td>${item.otomasyon}</td>
-                        <td>${item.kk}</td>
-                        <td style="font-weight: bold; color: #EF4444;">${item.fark}</td>
+                        <td>${ebatVal}</td>
+                        <td>${oto}</td>
+                        <td>${kkVal}</td>
+                        <td style="font-weight: bold; color: #EF4444;">${hesaplanmisFark}</td>
                     </tr>
                 `;
             });
             
             excelHtml += `</table></body></html>`;
 
-            // Data URI ve İndirme Tetikleyicisi
             let blob = new Blob([excelHtml], { type: 'application/vnd.ms-excel' });
             let url = URL.createObjectURL(blob);
             let a = document.createElement('a');
@@ -750,8 +771,10 @@
                 let tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-700/40 transition-colors";
                 
-                let oto = parseFloat(item.otomasyon) || 0;
-                let kkVal = parseFloat(item.kk) || 0;
+                let oto = parseFloat(String(item.otomasyon).replace(',', '.')) || 0;
+                let kkVal = parseFloat(String(item.kk).replace(',', '.')) || 0;
+                let ebatVal = parseFloat(String(item.ebat).replace(',', '.')) || 0;
+                
                 let farkHesap = (oto - kkVal).toFixed(2);
                 let farkKlass = parseFloat(farkHesap) === 0 ? "text-emerald-400 font-bold" : "text-rose-400 font-bold bg-rose-950/20";
 
@@ -766,11 +789,11 @@
 
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-medium">${item.tarih}</td>
-                    <td class="px-4 py-3 font-bold text-yellow-400 bg-slate-800/80 border-x border-slate-700">${item.vardiya}</td>
+                    <td class="px-4 py-3 font-bold text-yellow-400 bg-slate-800/80 border-x border-slate-700 text-xs">${item.vardiya}</td>
                     <td class="px-4 py-3">${item.makina}</td>
                     <td class="px-4 py-3 text-slate-400">${item.personel}</td>
                     <td class="px-4 py-3 font-semibold text-white">${item.kalite}</td>
-                    <td class="px-4 py-3">${item.ebat}</td>
+                    <td class="px-4 py-3 font-mono text-slate-300">${ebatVal}</td>
                     <td class="px-4 py-3 text-cyan-400 font-mono">${oto}</td>
                     <td class="px-4 py-3 text-amber-400 font-mono">${kkVal}</td>
                     <td class="px-4 py-3 ${farkKlass}">${farkHesap} CM</td>
@@ -820,11 +843,11 @@
 
         function inputTus(deger) {
             if(!seciliInput) return;
-            if((seciliInput.id === 'txtOtomasyonOlcum' || seciliInput.id === 'txtKKOlcum') && isNaN(deger) && deger !== '.') {
+            if((seciliInput.id === 'txtOtomasyonOlcum' || seciliInput.id === 'txtKKOlcum' || seciliInput.id === 'txtEbat') && isNaN(deger) && deger !== '.') {
                 return;
             }
             seciliInput.value += deger;
-            if(seciliInput.id === 'txtOtomasyonOlcum' || seciliInput.id === 'txtKKOlcum') {
+            if(seciliInput.id === 'txtOtomasyonOlcum' || seciliInput.id === 'txtKKOlcum' || seciliInput.id === 'txtEbat') {
                 validateSadeceSayi(seciliInput);
             }
             canliFarkHesapla();
@@ -880,6 +903,7 @@
 
             let otoNum = parseFloat(otomasyon.replace(',', '.'));
             let kkNum = parseFloat(kk.replace(',', '.'));
+            let ebatNum = parseFloat(ebat.replace(',', '.'));
             let farkHesapli = (otoNum - kkNum).toFixed(2) + " CM";
 
             let yeniKayıt = {
@@ -888,7 +912,7 @@
                 makina: makina,
                 personel: activeUser,
                 kalite: kalite,
-                ebat: ebat,
+                ebat: ebatNum,
                 otomasyon: otoNum,
                 kk: kkNum,
                 fark: farkHesapli
@@ -907,7 +931,6 @@
             showToast("Veri başarıyla veritabanına kaydedildi.", "success");
         }
 
-        // PERSONEL EKLEME VE YÖNETİM MODÜLÜ
         function verifyHkAdmin() {
             let pass = document.getElementById('hkAuthPass').value.trim();
             if(pass === "210821") {
