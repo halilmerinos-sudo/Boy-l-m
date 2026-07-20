@@ -28,7 +28,6 @@
             min-height: 100vh;
         }
 
-        /* GİRİŞ EKRANI STİLLERİ */
         #login-screen {
             position: fixed; top:0; left:0; width:100%; height:100%;
             background: var(--bg-gradient);
@@ -38,22 +37,22 @@
 
         .login-card {
             background: var(--card-bg);
-            width: 90%; max-width: 450px;
-            padding: 35px; border-radius: 24px;
+            width: 95%; max-width: 500px;
+            padding: 25px; border-radius: 24px;
             text-align: center; border: 1px solid var(--border-color);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
             margin: auto;
         }
 
-        .form-group { text-align: left; margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.75px; }
+        .form-group { text-align: left; margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.75px; }
 
         .input-box, .login-card select {
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 15px;
+            border-radius: 12px; padding: 12px;
             width: 100%; box-sizing: border-box;
-            color: white; font-size: 16px; margin-bottom: 5px;
+            color: white; font-size: 16px; margin-bottom: 2px;
             outline: none;
             transition: border-color 0.2s;
         }
@@ -62,43 +61,39 @@
         .btn-login {
             background: var(--main-blue);
             color: var(--dark-blue); border: none; width: 100%;
-            padding: 15px; border-radius: 12px;
+            padding: 14px; border-radius: 12px;
             font-weight: bold; font-size: 17px; cursor: pointer;
             transition: all 0.2s;
         }
         .btn-login:hover { filter: brightness(1.1); transform: translateY(-1px); }
         .btn-success { background-color: var(--success-color); color: var(--dark-blue); font-size: 16px; padding: 12px; }
         .btn-secondary { background-color: #475569; font-size: 16px; padding: 12px; margin-top: 15px; color: white; border: none; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .btn-danger { background-color: var(--danger-color); padding: 6px 12px; font-size: 12px; font-weight: bold; border-radius: 6px; border: none; color: var(--dark-blue); cursor: pointer; }
-
-        .crypto-link { display: inline-block; font-size: 13px; color: var(--main-blue); margin-top: 20px; cursor: pointer; text-decoration: underline; }
-
+        
         .user-mgmt-table { width: 100%; margin: 15px 0; border-collapse: collapse; font-size: 13px; text-align: left; color: white; }
-        .user-mgmt-table th, .user-mgmt-table td { padding: 12px; border: 1px solid var(--border-color); }
+        .user-mgmt-table th, .user-mgmt-table td { padding: 10px; border: 1px solid var(--border-color); text-align: center; }
         .user-mgmt-table th { background-color: rgba(0,0,0,0.2); font-weight: 600; color: var(--main-blue); }
         .user-divider { border-top: 2px dashed var(--border-color); margin: 20px 0; padding-top: 15px; }
 
-        /* UYGULAMA İÇİ STİLLER */
         .numpad-btn { transition: all 0.1s ease; }
         .numpad-btn:active { transform: scale(0.95); }
         
         .focused-input {
-            background-color: #fef08a !important; 
-            border-color: #eab308 !important;
-            color: #0f172a !important;
+            background-color: #38BDF8 !important; 
+            border-color: #0EA5E9 !important;
+            color: #0F172A !important;
         }
 
+        /* YANIP SÖNME ANİMASYONU */
         @keyframes flash-yellow {
-            0%, 100% { background-color: #475569; border-color: #475569; color: white; }
-            50% { background-color: #fef08a; border-color: #eab308; color: #0f172a; }
+            0%, 100% { background-color: #334155; border-color: #475569; color: white; }
+            50% { background-color: #FEF08A; border-color: #EAB308; color: #0F172A; }
         }
         .eksik-alan-animasyon {
-            animation: flash-yellow 0.6s ease-in-out 3;
+            animation: flash-yellow 0.5s ease-in-out 3;
         }
 
         #main-app { display: none; }
 
-        /* TOAST BİLDİRİM ANİMASYONLARI */
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -113,50 +108,105 @@
 </head>
 <body class="bg-slate-900 text-slate-100 p-4 min-h-screen flex items-center justify-center relative overflow-x-hidden">
 
-    <!-- DİNAMİK TOAST BİLDİRİM ALANI (SAĞ ÜST KÖŞE) -->
+    <!-- TOAST BİLDİRİM ALANI -->
     <div id="toast-container" class="fixed top-5 right-5 z-[3000] flex flex-col gap-3 w-full max-w-sm pointer-events-none"></div>
 
-    <!-- ANİMASYONLU MODAL (DİALOG) UYARI PENCERESİ -->
-    <div id="custom-modal" class="fixed inset-0 bg-black/80 z-[2500] flex items-center justify-center p-4 hidden transition-all duration-300">
-        <div id="modal-card" class="bg-slate-800 border-2 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl transform scale-75 opacity-0 transition-all duration-300">
-            <div id="modal-icon" class="w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 animate-bounce"></div>
-            <h2 id="modal-title" class="text-2xl font-black tracking-wide uppercase mb-3"></h2>
-            <div id="modal-content" class="text-slate-200 text-base space-y-3 font-medium text-center bg-slate-900/50 p-5 rounded-2xl border border-slate-700"></div>
-            <button onclick="closeCustomModal()" id="modal-btn" class="mt-6 w-full font-extrabold text-lg py-3.5 rounded-xl shadow-lg transition-all"></button>
+    <!-- EKSİK VARDİYA UYARI MODAL PENCERESİ -->
+    <div id="date-warning-modal" class="fixed inset-0 bg-black/80 z-[2700] flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-800 border-2 border-amber-500 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl">
+            <div class="w-20 h-20 bg-amber-500/10 border-2 border-amber-500 text-amber-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-4">
+                <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
+            </div>
+            <h2 class="text-xl font-black text-amber-400 tracking-wide uppercase mb-3">⚠️ EKSİK VARDİYA TESPİT EDİLDİ</h2>
+            <div id="date-warning-content" class="text-slate-200 text-sm space-y-2 font-medium text-left bg-slate-900/50 p-4 rounded-2xl border border-slate-700 max-h-48 overflow-y-auto"></div>
+            <button onclick="closeWarningModal()" class="mt-6 w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold text-base py-3 rounded-xl shadow-lg transition-all">
+                ANLADIM, DEVAM ET
+            </button>
         </div>
     </div>
 
-    <!-- EKSİK VARDİYA UYARI PENCERESİ (MODAL) -->
-    <div id="date-warning-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-800 border-2 border-amber-500 rounded-3xl p-8 max-w-xl w-full text-center shadow-2xl transform scale-100 transition-all">
-            <div class="w-20 h-20 bg-amber-500/10 border-2 border-amber-500 text-amber-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 animate-pulse">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+    <!-- GELİŞMİŞ EXCEL SEÇİM PANELİ -->
+    <div id="excel-rapor-modal" class="fixed inset-0 bg-black/85 z-[2400] flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-800 border-2 border-indigo-500 rounded-3xl p-6 max-w-5xl w-full shadow-2xl flex flex-col h-[90vh]">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-700">
+                <h2 class="text-xl font-black text-indigo-400 flex items-center gap-2">
+                    <i class="fa-solid fa-file-excel text-emerald-500 text-2xl"></i> DÖNEMSEL EXCEL RAPORLAMA PANELİ
+                </h2>
+                <button onclick="closeExcelModal()" class="text-slate-400 hover:text-white text-2xl font-bold"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <h2 class="text-2xl font-black text-amber-400 tracking-wide uppercase mb-3">⚠️ EKSİK VARDİYA KAYDI TESPİT EDİLDİ</h2>
-            <div id="date-warning-content" class="text-slate-200 text-base md:text-lg space-y-3 font-medium text-left bg-slate-900/50 p-5 rounded-2xl border border-slate-700 max-h-60 overflow-y-auto"></div>
-            <p class="text-xs text-slate-400 mt-4 italic">Sistem sürekliliği için 08/16 ve 16/00 vardiyalarının ikisinin de eksiksiz girilmesi önerilir.</p>
-            <button onclick="closeWarningModal()" class="mt-6 w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold text-lg py-3.5 rounded-xl shadow-lg transition-all">
-                ANLADIM, DEVAM ET
-            </button>
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 p-4 overflow-hidden flex-1">
+                <!-- Sol Panel -->
+                <div class="md:col-span-4 flex flex-col h-full bg-slate-900/60 p-4 rounded-2xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">1. Ay Seçimi</span>
+                        <div class="flex gap-2 items-center">
+                            <button onclick="degistirRaporYil(-1)" class="bg-slate-700 hover:bg-slate-600 px-2.5 py-1 rounded text-xs font-bold"><i class="fa-solid fa-chevron-left"></i></button>
+                            <span id="lblRaporYil" class="font-extrabold text-cyan-400 text-sm">2026</span>
+                            <button onclick="degistirRaporYil(1)" class="bg-slate-700 hover:bg-slate-600 px-2.5 py-1 rounded text-xs font-bold"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div id="excel-aylar-listesi" class="overflow-y-auto flex-1 space-y-2 pr-1"></div>
+                </div>
+                
+                <!-- Orta Panel -->
+                <div class="md:col-span-3 flex flex-col h-full bg-slate-900/60 p-4 rounded-2xl border border-slate-700">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 block">2. Hafta Seçimi</span>
+                    <div id="excel-haftalar-listesi" class="overflow-y-auto flex-1 space-y-2 pr-1 flex flex-col justify-start">
+                        <p class="text-xs text-slate-500 italic text-center my-auto">Lütfen sol taraftan bir ay seçiniz.</p>
+                    </div>
+                </div>
+
+                <!-- Sağ Panel -->
+                <div class="md:col-span-5 flex flex-col h-full bg-slate-900/80 p-4 rounded-2xl border border-slate-700 overflow-hidden">
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-3 block"><i class="fa-solid fa-list-check mr-1"></i> İndirilecek Kayıt Önizleme Listesi</span>
+                    <div class="overflow-auto flex-1 border border-slate-700 rounded-xl bg-slate-950/60">
+                        <table class="w-full text-xs text-center border-collapse">
+                            <thead class="bg-slate-800 text-slate-300 sticky top-0">
+                                <tr>
+                                    <th class="p-2 border border-slate-700">Tarih</th>
+                                    <th class="p-2 border border-slate-700">Vardiya</th>
+                                    <th class="p-2 border border-slate-700">M.No</th>
+                                    <th class="p-2 border border-slate-700">Kalite</th>
+                                    <th class="p-2 border border-slate-700">Fark</th>
+                                </tr>
+                            </thead>
+                            <tbody id="excelCanliListeleGövde" class="text-slate-300 divide-y divide-slate-800">
+                                <tr><td colspan="5" class="p-4 text-slate-500 italic">Dönem kriteri seçildiğinde kayıtlar burada listelenir.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-700 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="text-left">
+                    <span class="text-xs block text-slate-400 font-medium">Seçili Filtre Kriteri:</span>
+                    <span id="lblSeciliFiltreOzet" class="text-sm font-bold text-yellow-400">Dönem Seçilmedi</span>
+                </div>
+                <button onclick="tetikleyinExcelIndir()" class="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-black px-8 py-3.5 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-download text-lg"></i> EXCEL DOSYASINI OLUŞTUR VE İNDİR
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- GİRİŞ EKRANI -->
     <div id="login-screen">
         <div class="login-card" id="boxLogin">
-            <h2 class="text-2xl font-bold mb-2 text-white tracking-wide">BOY OTOMASYON SİSTEMİ</h2>
-            <p class="text-slate-400 text-xs mb-6">Otomasyon Veritabanına Erişmek İçin Giriş Yapın</p>
+            <h2 class="text-xl font-black mb-1 text-white tracking-wide">BOY OTOMASYON SİSTEMİ</h2>
+            <p class="text-slate-400 text-xs mb-4">Otomasyon Veritabanına Erişmek İçin Giriş Yapın</p>
             
             <div class="form-group">
                 <label>Personel Adı Soyadı</label>
-                <select id="loginUser" class="w-full text-white rounded-lg p-3 outline-none">
+                <select id="loginUser" class="w-full text-white rounded-lg p-2.5 outline-none">
                     <option value="">-- Personel Seçiniz --</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Çalışma Vardiyası (Saat Dilimi)</label>
-                <select id="loginVardiya" class="w-full text-white rounded-lg p-3 outline-none border border-slate-600">
+                <label>Çalışma Vardiyası</label>
+                <select id="loginVardiya" class="w-full text-white rounded-lg p-2.5 outline-none border border-slate-600">
                     <option value="">-- Vardiya Seçiniz --</option>
                     <option value="08/16">08/16 Vardiyası</option>
                     <option value="16/00">16/00 Vardiyası</option>
@@ -165,58 +215,79 @@
             
             <div class="form-group">
                 <label>Giriş Şifresi</label>
-                <input type="password" id="loginPass" class="input-box" placeholder="••••">
+                <input type="password" id="loginPass" class="input-box" placeholder="••••" readonly>
+            </div>
+
+            <!-- GİRİŞ EKRANI SANAL TUŞ TAKIMI (GÖRSELDEKİ TASARIM) -->
+            <div class="grid grid-cols-4 gap-2 bg-slate-900/80 p-3 rounded-xl border border-slate-700/60 my-3">
+                <button type="button" onclick="loginTus('7')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">7</button>
+                <button type="button" onclick="loginTus('8')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">8</button>
+                <button type="button" onclick="loginTus('9')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">9</button>
+                
+                <button type="button" onclick="loginSil()" class="numpad-btn bg-red-600 hover:bg-red-500 text-white font-bold text-xs p-3 rounded-lg shadow row-span-2 flex flex-col items-center justify-center gap-1">
+                    <i class="fa-solid fa-eraser text-base"></i><span>SİL</span>
+                </button>
+                
+                <button type="button" onclick="loginTus('4')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">4</button>
+                <button type="button" onclick="loginTus('5')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">5</button>
+                <button type="button" onclick="loginTus('6')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">6</button>
+                
+                <button type="button" onclick="loginTus('1')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">1</button>
+                <button type="button" onclick="loginTus('2')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">2</button>
+                <button type="button" onclick="loginTus('3')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">3</button>
+                
+                <button type="button" onclick="tryLogin()" class="numpad-btn bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs p-3 rounded-lg shadow row-span-2 flex flex-col items-center justify-center gap-1">
+                    <i class="fa-solid fa-circle-check text-base"></i><span>OK</span>
+                </button>
+                
+                <button type="button" onclick="loginTus('0')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow col-span-2">0</button>
+                <button type="button" onclick="loginTus('.')" class="numpad-btn bg-slate-700 hover:bg-slate-600 text-white font-bold text-lg p-3 rounded-lg shadow">.</button>
             </div>
             
-            <button class="btn-login" onclick="tryLogin()">Sisteme Giriş Yap</button>
-            <span class="crypto-link" onclick="switchLoginView(true)">Yönetici & Personel Paneli</span>
+            <span class="crypto-link text-xs cursor-pointer text-sky-400 underline block mt-2" onclick="switchLoginView(true)">Yönetici & Personel Paneli</span>
         </div>
 
+        <!-- PANEL YÖNETİMİ -->
         <div class="login-card" id="boxCrypto" style="display:none; max-width: 500px;">
             <h2 class="text-xl font-bold mb-2 text-white">Personel & Şifre Yönetimi</h2>
-            <p class="text-slate-400 text-xs mb-6">Sisteme yeni personel ekleme ve şifre belirleme alanı</p>
-            
             <div class="form-group">
-                <label>Yönetici (Halil Kılıç) Şifresi</label>
-                <input type="password" id="hkAuthPass" class="input-box" placeholder="Halil Bey'in Yetki Şifresi">
+                <label>Yönetici Yetki Şifresi</label>
+                <input type="password" id="hkAuthPass" class="input-box" placeholder="Yönetici Şifresi">
             </div>
-            <button class="btn-login" style="background-color: #6366F1; color: white; margin-bottom: 15px; font-size:16px; padding:12px;" onclick="verifyHkAdmin()">Listeyi ve Yönetimi Göster</button>
+            <button class="btn-login" style="background-color: #6366F1; color: white; margin-bottom: 15px; font-size:16px; padding:12px;" onclick="verifyHkAdmin()">Yönetimi Göster</button>
 
             <div id="adminManagementArea" style="display: none;">
-                <h3 style="font-size: 15px; text-align: left; margin-bottom: 5px; color:var(--main-blue);">📋 Kayıtlı Personel Listesi</h3>
-                <table class="user-mgmt-table">
-                    <thead>
-                        <tr>
-                            <th>Personel Adı Soyadı</th>
-                            <th>Şifre</th>
-                            <th style="width: 60px;">İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userMgmtTableBody"></tbody>
-                </table>
-
+                <div class="overflow-y-auto max-h-40 border border-slate-700 rounded-lg">
+                    <table class="user-mgmt-table m-0">
+                        <thead class="sticky top-0 bg-slate-800">
+                            <tr>
+                                <th>Personel</th>
+                                <th>Şifre</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userMgmtTableBody"></tbody>
+                    </table>
+                </div>
                 <div class="user-divider">
-                    <h3 style="font-size: 15px; text-align: left; margin-bottom: 10px; color:var(--success-color);">➕ Yeni Personel Ekle</h3>
                     <div class="form-group">
                         <label>Yeni Personel Adı Soyadı</label>
                         <input type="text" id="newStaffName" class="input-box" placeholder="Örn: Erdi Çelebi">
                     </div>
                     <div class="form-group">
                         <label>Yeni Personel Şifresi</label>
-                        <input type="password" id="newStaffPass" class="input-box" placeholder="4 Haneli Şifre">
+                        <input type="text" id="newStaffPass" class="input-box" placeholder="Şifre Girin">
                     </div>
                     <button class="btn-login btn-success" onclick="addNewStaff()">Sisteme Personeli Kaydet</button>
                 </div>
             </div>
-
-            <button class="btn-secondary" onclick="switchLoginView(false)">Giriş Ekranına Geri Dön</button>
+            <button class="btn-secondary" onclick="switchLoginView(false)">Giriş Ekranına Dön</button>
         </div>
     </div>
 
     <!-- ANA PROGRAM PANELİ -->
     <div id="main-app" class="w-full max-w-5xl bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
         
-        <!-- BAŞLIK -->
         <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-center border-b border-slate-600 flex justify-between items-center px-8">
             <h1 class="text-xl md:text-2xl font-extrabold tracking-wider uppercase text-white drop-shadow">
                 Boy Otomasyon Ölçüm Kayıt Formu
@@ -228,20 +299,16 @@
         </div>
 
         <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- SOL TARAF: FORM GİRDİLERİ -->
+            <!-- SOL FORM GİRDİLERİ -->
             <form class="lg:col-span-7 space-y-4" onsubmit="event.preventDefault();">
                 <input type="hidden" id="editIndex" value="-1">
-                
                 <div class="flex justify-between items-center bg-slate-700/50 p-3 rounded-lg border border-slate-600">
                     <span class="text-sm text-slate-400 font-medium">İşlem Tarihi:</span>
-                    <span id="txtTarih" class="font-bold text-blue-400"></span>
+                    <span id="txtTarih" class="font-bold text-blue-400">20.07.2026</span>
                 </div>
-
-                <!-- Makina No -->
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-slate-300">MAKİNA NO:</label>
-                    <select id="cmbMakinaNo" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                    <select id="cmbMakinaNo" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white focus:outline-none transition-all">
                         <option value="">Seçiniz...</option>
                         <option value="Makina 1">Makina 1</option>
                         <option value="Makina 2">Makina 2</option>
@@ -251,847 +318,667 @@
                         <option value="Makina 6">Makina 6</option>
                     </select>
                 </div>
-
-                <!-- Kalite İsmi -->
                 <div>
-                    <label class="block text-sm font-semibold mb-1 text-slate-300">HALI KALİTE İSMİ (Örn: SARAR LÜX):</label>
-                    <input type="text" id="txtKalite" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white font-medium focus:outline-none transition-all" placeholder="Halı kalitesini yazınız...">
+                    <label class="block text-sm font-semibold mb-1 text-slate-300">HALI KALİTE İSMİ:</label>
+                    <input type="text" id="txtKalite" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white focus:outline-none transition-all" placeholder="Halı kalitesini yazınız...">
                 </div>
-
-                <!-- Ebat -->
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-slate-300">EBAT BİLGİSİ:</label>
-                    <input type="text" id="txtEbat" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white font-medium focus:outline-none transition-all" placeholder="Değer yazın veya tuşlayın...">
+                    <input type="text" id="txtEbat" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white focus:outline-none transition-all" placeholder="Değer yazın veya tuşlayın...">
                 </div>
-
-                <!-- Otomasyon Ölçüm CM -->
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-slate-300">OTOMASYON ÖLÇÜM CM:</label>
-                    <input type="text" id="txtOtomasyonOlcum" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white font-medium focus:outline-none transition-all" placeholder="Değer yazın veya tuşlayın..." oninput="canliFarkHesapla()">
+                    <input type="text" id="txtOtomasyonOlcum" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white focus:outline-none transition-all" placeholder="Değer yazın (Sadece sayı)..." oninput="validateSadeceSayi(this); canliFarkHesapla();">
                 </div>
-
-                <!-- K.K Ölçümü -->
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-slate-300">K.K ÖLÇÜMÜ:</label>
-                    <input type="text" id="txtKKOlcum" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white font-medium focus:outline-none transition-all" placeholder="Değer yazın veya tuşlayın..." oninput="canliFarkHesapla()">
+                    <input type="text" id="txtKKOlcum" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-white focus:outline-none transition-all" placeholder="Değer yazın (Sadece sayı)..." oninput="validateSadeceSayi(this); canliFarkHesapla();">
                 </div>
-
-                <!-- ANLIK FARK GÖSTERİM PANELİ -->
                 <div class="bg-slate-900/60 p-3 rounded-xl border border-dashed border-slate-600 flex justify-between items-center px-4">
                     <span class="text-xs text-slate-400 font-bold tracking-wider uppercase"><i class="fa-solid fa-calculator text-cyan-400 mr-1"></i> Ölçüm Farkı (Sonuç):</span>
                     <span id="lblCanliFark" class="text-base font-black text-slate-400">---</span>
                 </div>
-
             </form>
 
-            <!-- SAĞ TARAF: TUŞ TAKIMI VE ÖZEL EXCEL PANELİ -->
+            <!-- SAĞ PANEL TUŞ TAKIMI -->
             <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
-                
-                <!-- SANAL TUŞ TAKIMI -->
                 <div class="grid grid-cols-4 gap-2 bg-slate-700/40 p-4 rounded-xl border border-slate-600/50">
                     <button type="button" onclick="inputTus('7')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">7</button>
                     <button type="button" onclick="inputTus('8')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">8</button>
                     <button type="button" onclick="inputTus('9')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">9</button>
-                    
                     <button type="button" onclick="inputSil()" class="numpad-btn bg-red-600 hover:bg-red-500 text-white font-bold text-sm p-4 rounded-lg shadow row-span-2 flex flex-col items-center justify-center gap-1">
-                        <i class="fa-solid fa-eraser text-lg"></i>
-                        <span>SİL</span>
+                        <i class="fa-solid fa-eraser text-lg"></i><span>SİL</span>
                     </button>
-
                     <button type="button" onclick="inputTus('4')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">4</button>
                     <button type="button" onclick="inputTus('5')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">5</button>
                     <button type="button" onclick="inputTus('6')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">6</button>
-
                     <button type="button" onclick="inputTus('1')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">1</button>
                     <button type="button" onclick="inputTus('2')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">2</button>
                     <button type="button" onclick="inputTus('3')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">3</button>
-                    
                     <button type="button" onclick="formKaydet()" class="numpad-btn bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base p-4 rounded-lg shadow row-span-2 flex flex-col items-center justify-center gap-1">
-                        <i class="fa-solid fa-circle-check text-xl"></i>
-                        <span id="lblOkButton">OK</span>
+                        <i class="fa-solid fa-circle-check text-xl"></i><span id="lblOkButton">OK</span>
                     </button>
-
                     <button type="button" onclick="inputTus('0')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow col-span-2">0</button>
-                    <button type="button" onclick="inputTus('.')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">./,</button>
+                    <button type="button" onclick="inputTus('.')" class="numpad-btn bg-slate-600 hover:bg-slate-500 text-white font-bold text-xl p-4 rounded-lg shadow">.</button>
                 </div>
-                <button type="button" id="btnIptalDuzenle" onclick="iptalDuzenle()" class="hidden w-full bg-slate-600 hover:bg-slate-500 text-white font-bold py-2.5 rounded-lg shadow">
-                    <i class="fa-solid fa-xmark"></i> Düzenlemeyi İptal Et
-                </button>
+                <button type="button" id="btnIptalDuzenle" onclick="iptalDuzenle()" class="hidden w-full bg-slate-600 hover:bg-slate-500 text-white font-bold py-2.5 rounded-lg shadow">İptal Et</button>
 
-                <!-- EKSİK VARDİYA TAKİP PANELİ -->
                 <div class="bg-slate-700/60 p-4 rounded-xl border border-slate-600 text-center">
-                    <button type="button" onclick="toggleMissingDaysPanel()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded-lg shadow flex items-center justify-center gap-2 transition-all">
-                        <i class="fa-solid fa-calendar-minus"></i>
-                        <span>Eksik Vardiya Takip Paneli</span>
+                    <button type="button" onclick="toggleMissingDaysPanel()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded-lg shadow flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-calendar-minus"></i><span>Eksik Vardiya Takip Paneli</span>
                     </button>
                     <div id="missing-days-area" class="hidden mt-3 bg-slate-900/60 p-3 rounded-lg border border-slate-700 text-left text-xs text-slate-300 max-h-40 overflow-y-auto space-y-1"></div>
                 </div>
 
-                <!-- EXCEL RAPORLAMA ALANI -->
-                <div class="bg-gradient-to-br from-indigo-950/60 to-slate-900/90 p-4 rounded-xl border-2 border-indigo-500/30 shadow-xl flex flex-col gap-3 text-center">
-                    <p class="text-[11px] text-slate-400">
-                        Raporlamada <span class="text-white font-semibold">Vardiya Sütunu</span> dahil tüm veriler Excel formatında <span class="text-cyan-400 font-semibold">tam ortalanmış</span> olarak listelenir.
-                    </p>
-                    <button type="button" onclick="excelIndir()" class="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-3 transition-all">
-                        <i class="fa-solid fa-file-invoice text-xl"></i>
-                        <span class="text-sm font-black tracking-wide">EXCEL RAPORUNU İNDİR</span>
+                <div class="bg-gradient-to-br from-indigo-950/60 to-slate-900/90 p-4 rounded-xl border-2 border-indigo-500/30 shadow-xl text-center">
+                    <button type="button" onclick="openExcelModal()" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-file-invoice text-xl"></i><span class="text-sm font-black tracking-wide">EXCEL RAPORLA</span>
                     </button>
                 </div>
-
             </div>
         </div>
 
-        <!-- KAYIT GEÇMİŞİ -->
+        <!-- KAYIT GEÇMİŞİ TABLOSU -->
         <div class="p-6 border-t border-slate-700 bg-slate-900">
             <h3 class="text-md font-bold mb-3 text-slate-300 flex items-center gap-2">
                 <i class="fa-solid fa-clock-rotate-left text-blue-500"></i> Sistem Kayıt Geçmişi (Son Giriş En Üstte)
             </h3>
             <div class="overflow-x-auto rounded-lg border border-slate-700">
                 <table class="w-full text-sm text-left text-slate-300">
-                    <thead class="text-xs uppercase bg-slate-700 text-slate-200">
+                    <thead class="text-xs uppercase bg-slate-700 text-slate-200 text-center">
                         <tr id="tabloHeader">
-                            <th class="px-4 py-3 text-center">Tarih</th>
-                            <th class="px-4 py-3 text-center bg-slate-600 text-yellow-300">Vardiya</th>
-                            <th class="px-4 py-3 text-center">Makina No</th>
-                            <th class="px-4 py-3 text-center">Personel</th>
-                            <th class="px-4 py-3 text-center">Kalite İsmi</th>
-                            <th class="px-4 py-3 text-center">Ebat</th>
-                            <th class="px-4 py-3 text-center">Oto. Ölçüm</th>
-                            <th class="px-4 py-3 text-center">K.K Ölçüm</th>
-                            <th class="px-4 py-3 text-center bg-indigo-900/40 text-cyan-300">Sonuç (Fark)</th>
+                            <th class="px-4 py-3">Tarih</th>
+                            <th class="px-4 py-3 bg-slate-600 text-yellow-300">Vardiya</th>
+                            <th class="px-4 py-3">Makina No</th>
+                            <th class="px-4 py-3">Personel</th>
+                            <th class="px-4 py-3">Kalite İsmi</th>
+                            <th class="px-4 py-3">Ebat</th>
+                            <th class="px-4 py-3 text-cyan-400">Oto. Ölçüm</th>
+                            <th class="px-4 py-3 text-amber-400">K.K Ölçüm</th>
+                            <th class="px-4 py-3 bg-indigo-900/40 text-cyan-300">Sonuç (Fark)</th>
+                            <th id="thAksiyonlar" class="px-4 py-3 bg-slate-800 text-rose-300 hidden">Aksiyonlar</th>
                         </tr>
                     </thead>
-                    <tbody id="veriTablosu" class="divide-y divide-slate-700 text-center">
-                        <tr id="bosSatir"><td colspan="9" class="text-center py-4 text-slate-500">Sistemde henüz bir ölçüm kaydı bulunmuyor.</td></tr>
-                    </tbody>
+                    <tbody id="veriTablosu" class="divide-y divide-slate-700 text-center"></tbody>
                 </table>
             </div>
         </div>
-
     </div>
 
     <script>
         var DB_KEY = 'BOY_OTOMASYON_V4_SHIFT_DB';
         var USERS_KEY = 'system_users';
 
-        var db = JSON.parse(localStorage.getItem(DB_KEY)) || [];
-        var usersCache = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        var varsayilanKayıtlar = [
+            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 2", personel: "HALİL KILIÇ", kalite: "yjt", ebat: "y", otomasyon: 25, kk: 26, fark: "-1.00 CM" },
+            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 1", personel: "HALİL KILIÇ", kalite: "üo", ebat: "ıup", otomasyon: 25, kk: 26, fark: "-1.00 CM" },
+            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 2", personel: "Halil Kılıç", kalite: "tuutı", ebat: "utıp", otomasyon: 25, kk: 26, fark: "-1.00 CM" },
+            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 2", personel: "HALİL KILIÇ", kalite: "safir", ebat: "j", otomasyon: 26, kk: 25, fark: "1.00 CM" },
+            { tarih: "20.07.2026", vardiya: "08/16", makina: "Makina 2", personel: "HALİL KILIÇ", kalite: "kj", ebat: "25", otomasyon: 25, kk: 20, fark: "5.00 CM" },
+            { tarih: "20.07.2026", vardiya: "16/00", makina: "Makina 2", personel: "Halil Kılıç", kalite: "gf", ebat: "80", otomasyon: 25, kk: 25, fark: "0.00 CM" },
+            { tarih: "18.07.2026", vardiya: "16/00", makina: "Makina 2", personel: "Halil Kılıç", kalite: "HG", ebat: "100", otomasyon: 28, kk: 50, fark: "-22.00 CM" },
+            { tarih: "18.07.2026", vardiya: "16/00", makina: "Makina 1", personel: "Halil Kılıç", kalite: "SAF", ebat: "80", otomasyon: 25, kk: 28, fark: "-3.00 CM" }
+        ];
+
+        var db = JSON.parse(localStorage.getItem(DB_KEY)) || varsayilanKayıtlar;
+        if(!localStorage.getItem(DB_KEY)) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+        var usersCache = JSON.parse(localStorage.getItem(USERS_KEY)) || [
+            { name: "Halil Kılıç", pass: "210821", role: "admin" },
+            { name: "Erdi Çelebi", pass: "1234", role: "staff" }
+        ];
+        localStorage.setItem(USERS_KEY, JSON.stringify(usersCache));
+
         var seciliInput = null;
         var activeUser = '';
         var activeVardiya = '';
-        var geciciKayıtData = null;
         var isAdmin = false;
 
-        if (!usersCache || usersCache.length === 0) {
-            usersCache = [
-                { name: "Halil Kılıç", pass: "210821", role: "admin" },
-                { name: "Erdi Çelebi", pass: "1234", role: "staff" }
-            ];
-            localStorage.setItem(USERS_KEY, JSON.stringify(usersCache));
-        }
+        var raporSeciliYil = 2026;
+        var seciliFiltreAy = null; 
+        var seciliFiltreHafta = null; 
+        var aylarIsimler = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 
-        // --- MODERN BİLDİRİM VE MODAL MOTORU ---
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            
             let bg = 'bg-slate-800 border-slate-700';
             let icon = '<i class="fa-solid fa-circle-info text-blue-400"></i>';
-            
-            if (type === 'success') {
-                bg = 'bg-emerald-950/90 border-emerald-500 text-emerald-200';
-                icon = '<i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>';
-            } else if (type === 'error') {
-                bg = 'bg-rose-950/90 border-rose-500 text-rose-200';
-                icon = '<i class="fa-solid fa-circle-xmark text-rose-400 text-lg"></i>';
-            } else if (type === 'warning') {
-                bg = 'bg-amber-950/90 border-amber-500 text-amber-200';
-                icon = '<i class="fa-solid fa-triangle-exclamation text-amber-400 text-lg"></i>';
-            }
-
+            if (type === 'success') bg = 'bg-emerald-950/90 border-emerald-500 text-emerald-200';
+            if (type === 'error') { bg = 'bg-rose-950/90 border-rose-500 text-rose-200'; icon = '<i class="fa-solid fa-circle-xmark text-rose-400"></i>'; }
+            if (type === 'warning') { bg = 'bg-amber-950/90 border-amber-500 text-amber-200'; icon = '<i class="fa-solid fa-triangle-exclamation text-amber-400"></i>'; }
             toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-2xl text-sm font-semibold toast-enter ${bg}`;
             toast.innerHTML = `${icon} <span>${message}</span>`;
-            
             container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.remove('toast-enter');
-                toast.classList.add('toast-exit');
-                toast.addEventListener('animationend', () => toast.remove());
-            }, 3500);
+            setTimeout(() => { toast.remove(); }, 3000);
         }
 
-        function showCustomModal(title, contentHtml, type = 'info', btnText = 'TAMAM') {
-            const modal = document.getElementById('custom-modal');
-            const card = document.getElementById('modal-card');
-            const iconBox = document.getElementById('modal-icon');
-            const titleEl = document.getElementById('modal-title');
-            const contentEl = document.getElementById('modal-content');
-            const btnEl = document.getElementById('modal-btn');
-
-            titleEl.innerText = title;
-            contentEl.innerHTML = contentHtml;
-            btnEl.innerText = btnText;
-
-            // Tip stillerini temizle ve ata
-            iconBox.className = "w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 animate-bounce";
-            
-            if (type === 'success') {
-                card.className = "bg-slate-800 border-2 border-emerald-500 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl transform transition-all duration-300 scale-75 opacity-0";
-                iconBox.classList.add("bg-emerald-500/10", "border-2", "border-emerald-500", "text-emerald-400");
-                iconBox.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-                titleEl.className = "text-2xl font-black text-emerald-400 tracking-wide uppercase mb-3";
-                btnEl.className = "mt-6 w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-lg py-3.5 rounded-xl shadow-lg transition-all";
-            } else if (type === 'error') {
-                card.className = "bg-slate-800 border-2 border-rose-500 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl transform transition-all duration-300 scale-75 opacity-0";
-                iconBox.classList.add("bg-rose-500/10", "border-2", "border-rose-500", "text-rose-400");
-                iconBox.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
-                titleEl.className = "text-2xl font-black text-rose-400 tracking-wide uppercase mb-3";
-                btnEl.className = "mt-6 w-full bg-rose-500 hover:bg-rose-400 text-white font-extrabold text-lg py-3.5 rounded-xl shadow-lg transition-all";
-            } else {
-                card.className = "bg-slate-800 border-2 border-cyan-500 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl transform transition-all duration-300 scale-75 opacity-0";
-                iconBox.classList.add("bg-cyan-500/10", "border-2", "border-cyan-500", "text-cyan-400");
-                iconBox.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
-                titleEl.className = "text-2xl font-black text-cyan-400 tracking-wide uppercase mb-3";
-                btnEl.className = "mt-6 w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-lg py-3.5 rounded-xl shadow-lg transition-all";
-            }
-
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                card.classList.remove('scale-75', 'opacity-0');
-                card.classList.add('scale-100', 'opacity-100');
-            }, 50);
-
-            playAlertSound();
-        }
-
-        function closeCustomModal() {
-            const modal = document.getElementById('custom-modal');
-            const card = document.getElementById('modal-card');
-            card.classList.remove('scale-100', 'opacity-100');
-            card.classList.add('scale-75', 'opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 200);
-        }
-
-        function persistDB() {
-            localStorage.setItem(DB_KEY, JSON.stringify(db));
-        }
-
-        function persistUsers() {
-            localStorage.setItem(USERS_KEY, JSON.stringify(usersCache));
-        }
-
-        function playAlertSound() {
+        function playAlertSound(freq = 600, type = 'sine', duration = 0.2) {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                [0, 0.28, 0.56].forEach(t => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.value = 880;
-                    gain.gain.value = 0.001;
-                    gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + t + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.18);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start(ctx.currentTime + t);
-                    osc.stop(ctx.currentTime + t + 0.2);
-                });
-            } catch (e) {
-                console.warn('Uyarı sesi çalınamadı:', e);
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch (e) { console.log(e); }
+        }
+
+        // GİRİŞ EKRANI İÇİN SANAL TUŞ TAKIMI FONKSİYONLARI
+        function loginTus(deger) {
+            let pField = document.getElementById('loginPass');
+            pField.value += deger;
+        }
+        function loginSil() {
+            let pField = document.getElementById('loginPass');
+            pField.value = pField.value.slice(0, -1);
+        }
+
+        function validateSadeceSayi(input) {
+            let orijinalDeger = input.value;
+            let temizDeger = orijinalDeger.replace(/[^0-9.,]/g, '');
+            let parcalar = temizDeger.split(/[.,]/);
+            if (parcalar.length > 2) {
+                temizDeger = parcalar[0] + '.' + parcalar.slice(1).join('');
             }
-        }
-
-        function getUsersFromStorage() {
-            return usersCache;
-        }
-
-        function getAdminPassword() {
-            let users = getUsersFromStorage();
-            let adminUser = users.find(u => u.role === "admin");
-            return adminUser ? adminUser.pass : "210821";
+            if (orijinalDeger !== temizDeger) {
+                input.value = temizDeger;
+                playAlertSound(750, 'sawtooth', 0.1);
+                showToast("Bu alana sadece rakam girebilirsiniz!", "warning");
+            }
         }
 
         function populateLoginUsers() {
             let sel = document.getElementById('loginUser');
-            if(!sel) return;
-            let users = getUsersFromStorage();
             sel.innerHTML = '<option value="">-- Personel Seçiniz --</option>';
-            users.forEach(u => {
+            usersCache.forEach(u => {
                 let opt = document.createElement('option');
-                opt.value = u.name;
-                opt.textContent = u.name;
-                sel.appendChild(opt);
+                opt.value = u.name; opt.textContent = u.name; sel.appendChild(opt);
             });
         }
 
-        function switchLoginView(toCrypto) {
-            document.getElementById('boxLogin').style.display = toCrypto ? 'none' : 'block';
-            document.getElementById('boxCrypto').style.display = toCrypto ? 'block' : 'none';
-            if(!toCrypto) {
-                document.getElementById('hkAuthPass').value = "";
-                document.getElementById('adminManagementArea').style.display = 'none';
+        function tryLogin() {
+            let uName = document.getElementById('loginUser').value;
+            let uVardiya = document.getElementById('loginVardiya').value;
+            let uPass = document.getElementById('loginPass').value.trim();
+
+            if(!uName || !uVardiya || !uPass) {
+                showToast("Lütfen personel, vardiya ve şifre giriniz.", "warning");
+                return;
             }
-        }
 
-        function verifyHkAdmin() {
-            let hkPass = document.getElementById('hkAuthPass').value.trim();
-            let adminPass = getAdminPassword();
-            if(hkPass === adminPass) {
-                document.getElementById('adminManagementArea').style.display = 'block';
-                renderUserMgmtTable();
-                showToast("Yönetici yetkilendirmesi başarılı.", "success");
-            } else {
-                showToast("Hata: Halil Kılıç yetki şifresi yanlış!", "error");
-                document.getElementById('adminManagementArea').style.display = 'none';
-            }
-        }
+            let found = usersCache.find(u => u.name === uName && u.pass === uPass);
+            if(found) {
+                activeUser = found.name;
+                activeVardiya = uVardiya;
+                isAdmin = (found.role === 'admin');
 
-        function renderUserMgmtTable() {
-            let tbody = document.getElementById('userMgmtTableBody');
-            tbody.innerHTML = "";
-            let users = getUsersFromStorage();
-            users.forEach((user, index) => {
-                let tr = document.createElement('tr');
-                let tdName = document.createElement('td');
-                tdName.textContent = user.name;
-                tr.appendChild(tdName);
+                document.getElementById('p-info').innerHTML = `<i class="fa-solid fa-user-gear mr-1"></i> ${activeUser}`;
+                document.getElementById('v-info').innerHTML = `<i class="fa-solid fa-business-time mr-1"></i> ${activeVardiya}`;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
 
-                let tdPass = document.createElement('td');
-                tdPass.textContent = "•••• (" + user.pass + ")";
-                tr.appendChild(tdPass);
-
-                let tdAction = document.createElement('td');
-                if(user.role !== "admin") {
-                    let delBtn = document.createElement('button');
-                    delBtn.className = "btn-danger";
-                    delBtn.textContent = "Sil";
-                    delBtn.onclick = function() { removeStaff(index); };
-                    tdAction.appendChild(delBtn);
-                } else {
-                    tdAction.textContent = "Yönetici";
-                    tdAction.style.fontSize = "11px";
-                    tdAction.style.color = "var(--text-secondary)";
+                if(isAdmin) {
+                    document.getElementById('thAksiyonlar').classList.remove('hidden');
                 }
-                tr.appendChild(tdAction);
+
+                renderTablo();
+                kontrolEtEksikVardiyaSesli();
+            } else {
+                showToast("Hatalı Şifre Veya Personel!", "error");
+            }
+        }
+
+        function kontrolEtEksikVardiyaSesli() {
+            let testDates = ["16.07.2026", "17.07.2026", "18.07.2026", "19.07.2026", "20.07.2026"];
+            let missingReports = [];
+
+            testDates.forEach(d => {
+                let dayRecords = db.filter(r => r.tarih.replace(/\//g, '.') === d);
+                let hasShift1 = dayRecords.some(r => r.vardiya === "08/16");
+                let hasShift2 = dayRecords.some(r => r.vardiya === "16/00");
+                if(!hasShift1 || !hasShift2) {
+                    let eksikler = [];
+                    if(!hasShift1) eksikler.push("08/16");
+                    if(!hasShift2) eksikler.push("16/00");
+                    missingReports.push(`Satır: <strong>${d}</strong> -> Eksik: ${eksikler.join(" ve ")}`);
+                }
+            });
+
+            let area = document.getElementById('missing-days-area');
+            area.innerHTML = '';
+            
+            if(missingReports.length > 0) {
+                playAlertSound(440, 'triangle', 0.35);
+                let contentBox = document.getElementById('date-warning-content');
+                contentBox.innerHTML = missingReports.map(m => `<p class="border-b border-slate-700 pb-1 text-amber-400">⚠️ ${m}</p>`).join("");
+                document.getElementById('date-warning-modal').classList.remove('hidden');
+
+                missingReports.forEach(m => {
+                    let p = document.createElement('p');
+                    p.innerHTML = m;
+                    area.appendChild(p);
+                });
+            } else {
+                area.innerHTML = '<p class="text-emerald-400">Tüm vardiyalar tam.</p>';
+            }
+        }
+
+        function closeWarningModal() { document.getElementById('date-warning-modal').classList.add('hidden'); }
+        function toggleMissingDaysPanel() { document.getElementById('missing-days-area').classList.toggle('hidden'); }
+
+        function openExcelModal() {
+            document.getElementById('excel-rapor-modal').classList.remove('hidden');
+            seciliFiltreAy = null; seciliFiltreHafta = null;
+            renderExcelAylar(); renderExcelHaftalar(); canliFiltreleVeListele();
+        }
+        function closeExcelModal() { document.getElementById('excel-rapor-modal').classList.add('hidden'); }
+        
+        function degistirRaporYil(yon) {
+            raporSeciliYil += yon;
+            document.getElementById('lblRaporYil').textContent = raporSeciliYil;
+            seciliFiltreAy = null; seciliFiltreHafta = null;
+            renderExcelAylar(); renderExcelHaftalar(); canliFiltreleVeListele();
+        }
+
+        function renderExcelAylar() {
+            const container = document.getElementById('excel-aylar-listesi');
+            container.innerHTML = '';
+            for (let i = 0; i < 12; i++) {
+                let btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `w-full text-left px-3 py-2 rounded-xl border text-xs font-bold flex justify-between items-center ${
+                    seciliFiltreAy === i ? 'bg-indigo-600 border-indigo-400 text-white' : 'bg-slate-800 border-slate-700 text-slate-200'
+                }`;
+                btn.innerHTML = `<span>01/${(i+1).toString().padStart(2,'0')}/${raporSeciliYil} ${aylarIsimler[i]}</span>`;
+                btn.onclick = function() {
+                    seciliFiltreAy = i; seciliFiltreHafta = null;
+                    renderExcelAylar(); renderExcelHaftalar(); canliFiltreleVeListele();
+                };
+                container.appendChild(btn);
+            }
+        }
+
+        function renderExcelHaftalar() {
+            const container = document.getElementById('excel-haftalar-listesi');
+            container.innerHTML = '';
+            if (seciliFiltreAy === null) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic my-auto text-center">Önce ay seçin.</p>`;
+                return;
+            }
+
+            let btnTum = document.createElement('button');
+            btnTum.className = `w-full text-left px-3 py-2 text-xs font-bold rounded-xl border ${seciliFiltreHafta === 'TUM' ? 'bg-cyan-600 text-white': 'bg-slate-900 border-slate-700 text-cyan-400'}`;
+            btnTum.textContent = "Tüm Ayı Seç";
+            btnTum.onclick = function() { seciliFiltreHafta = 'TUM'; renderExcelHaftalar(); canliFiltreleVeListele(); };
+            container.appendChild(btnTum);
+
+            for (let h = 1; h <= 5; h++) {
+                let btn = document.createElement('button');
+                btn.className = `w-full text-left px-3 py-2 text-xs rounded-xl border mt-1 ${seciliFiltreHafta === h ? 'bg-emerald-600 text-white' : 'bg-slate-800 border-slate-700'}`;
+                btn.textContent = `${h}. Hafta Verileri`;
+                btn.onclick = function() { seciliFiltreHafta = h; renderExcelHaftalar(); canliFiltreleVeListele(); };
+                container.appendChild(btn);
+            }
+        }
+
+        // FİLTRELENEN VERİLERİ DÖNDÜRÜR
+        function getFiltreliKayıtlar() {
+            if(seciliFiltreAy === null || !seciliFiltreHafta) return [];
+            return db.filter(item => {
+                let temizTarih = item.tarih.replace(/\//g, '.');
+                let p = temizTarih.split('.');
+                if(p.length < 3) return false;
+                let kGun = parseInt(p[0], 10);
+                let kAy = parseInt(p[1], 10) - 1;
+                let kYil = parseInt(p[2], 10);
+
+                if(kYil !== raporSeciliYil || kAy !== seciliFiltreAy) return false;
+                if(seciliFiltreHafta === 'TUM') return true;
+
+                let bas = (seciliFiltreHafta - 1) * 7 + 1;
+                let bit = seciliFiltreHafta * 7;
+                if(seciliFiltreHafta === 5) bit = 31;
+                return (kGun >= bas && kGun <= bit);
+            });
+        }
+
+        function canliFiltreleVeListele() {
+            const elOzet = document.getElementById('lblSeciliFiltreOzet');
+            const tbody = document.getElementById('excelCanliListeleGövde');
+            tbody.innerHTML = '';
+
+            let filtreli = getFiltreliKayıtlar();
+
+            if(seciliFiltreAy === null || !seciliFiltreHafta) {
+                elOzet.textContent = "Dönem Seçilmedi";
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-slate-500 italic">Lütfen öncelikle sol taraftan Ay ve Hafta seçimi yapınız.</td></tr>`;
+                return;
+            }
+
+            elOzet.textContent = `${aylarIsimler[seciliFiltreAy]} (${seciliFiltreHafta === 'TUM' ? 'Tüm Ay' : seciliFiltreHafta + '. Hafta'}) - Toplam: ${filtreli.length} Kayıt`;
+
+            if(filtreli.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-rose-400 font-semibold italic">Bu takvim aralığında kayıt bulunamadı.</td></tr>`;
+                return;
+            }
+
+            filtreli.forEach(item => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-2 border border-slate-800">${item.tarih}</td>
+                    <td class="p-2 border border-slate-800 text-yellow-400">${item.vardiya}</td>
+                    <td class="p-2 border border-slate-800">${item.makina}</td>
+                    <td class="p-2 border border-slate-800 font-bold">${item.kalite}</td>
+                    <td class="p-2 border border-slate-800 font-mono">${item.fark}</td>
+                `;
                 tbody.appendChild(tr);
             });
         }
 
-        function addNewStaff() {
-            let nameInput = document.getElementById('newStaffName');
-            let passInput = document.getElementById('newStaffPass');
-            let name = nameInput.value.trim();
-            let pass = passInput.value.trim();
-
-            if(!name || !pass) { showToast("Lütfen personel adını ve şifresini doldurun!", "warning"); return; }
-
-            let users = getUsersFromStorage();
-            let exists = users.some(u => u.name.toLocaleLowerCase('tr-TR') === name.toLocaleLowerCase('tr-TR'));
-            if(exists) { showToast("Bu personel ismi sistemde zaten kayıtlı!", "error"); return; }
-
-            users.push({ name: name, pass: pass, role: "staff" });
-            usersCache = users;
-            persistUsers();
-            
-            showToast(`${name} personeli sisteme başarıyla eklendi.`, "success");
-            nameInput.value = ""; passInput.value = "";
-            renderUserMgmtTable();
-            populateLoginUsers();
-        }
-
-        function removeStaff(index) {
-            let users = getUsersFromStorage();
-            let removedName = users[index].name;
-            if(users[index].role === "admin") {
-                showToast("Yönetici hesabı silinemez!", "error");
+        // GERÇEK EXCEL DOSYASI OLUŞTURMA VE İNDİRME MOTORU
+        function tetikleyinExcelIndir() {
+            let liste = getFiltreliKayıtlar();
+            if (liste.length === 0) {
+                showToast("Seçilen döneme ait indirilecek kayıt bulunamadı!", "warning"); 
                 return;
             }
             
-            // Silme onayını modern modal ile yapıyoruz
-            showCustomModal("PERSONEL SİLME ONAYI", `<strong>${removedName}</strong> isimli personeli kalıcı olarak silmek istediğinize emin misiniz?`, "error", "EVET, SİL");
-            document.getElementById('modal-btn').onclick = function() {
-                users.splice(index, 1);
-                usersCache = users;
-                persistUsers();
-                renderUserMgmtTable();
-                populateLoginUsers();
-                closeCustomModal();
-                showToast("Personel başarıyla silindi.", "success");
-            };
-        }
-
-        function tryLogin() {
-            let user = document.getElementById('loginUser').value.trim();
-            let vardiya = document.getElementById('loginVardiya').value.trim();
-            let pass = document.getElementById('loginPass').value.trim();
+            // Excel HTML Şablonu Oluşturma (CSS İçeren Gerçek Excel Formatı)
+            let excelHtml = `
+            <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+            <head><meta charset="utf-8"></head>
+            <body>
+                <table border="1">
+                    <tr style="background-color: #1E293B; color: #FFFFFF; font-weight: bold; text-align: center;">
+                        <th>Tarih</th>
+                        <th>Vardiya</th>
+                        <th>Makina No</th>
+                        <th>Personel</th>
+                        <th>Kalite İsmi</th>
+                        <th>Ebat</th>
+                        <th>Otomasyon Ölçüm (CM)</th>
+                        <th>K.K Ölçüm (CM)</th>
+                        <th>Fark Sonucu</th>
+                    </tr>
+            `;
             
-            if(!user || !vardiya || !pass) { showToast("Lütfen Kullanıcı, Vardiya ve Şifreyi eksiksiz seçip girin.", "warning"); return; }
-
-            db = JSON.parse(localStorage.getItem(DB_KEY)) || db;
-            usersCache = JSON.parse(localStorage.getItem(USERS_KEY)) || usersCache;
-
-            let users = getUsersFromStorage();
-            let matchedUser = users.find(u => u.name.toLocaleLowerCase('tr-TR') === user.toLocaleLowerCase('tr-TR') && u.pass === pass);
-
-            if(matchedUser) {
-                activeUser = matchedUser.name; 
-                activeVardiya = vardiya;
-                
-                isAdmin = (matchedUser.role === "admin");
-
-                document.getElementById('p-info').innerHTML = `<i class="fa-solid fa-user-check mr-1 text-emerald-400"></i> ${activeUser}`;
-                document.getElementById('v-info').innerHTML = `<i class="fa-solid fa-user-clock mr-1"></i> VARDİYA: ${activeVardiya}`;
-                
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                
-                setupTableHeader();
-                tabloGuncelle();
-                calculateMissingDays();
-                showToast(`Hoş geldiniz, ${activeUser}!`, "success");
-                
-                if (!sessionStorage.getItem('first_login_warning_shown')) {
-                    const gapStatus = checkDateAndShiftGap();
-                    if(gapStatus.gapDetected) {
-                        showWarningModalOnly(gapStatus.missingItems);
-                        sessionStorage.setItem('first_login_warning_shown', 'true');
-                    }
-                }
-            } else {
-                showToast("Hatalı kullanıcı adı veya şifre!", "error");
-            }
-        }
-
-        function setupTableHeader() {
-            let header = document.getElementById("tabloHeader");
-            let exCol = document.getElementById("adminHeaderCol");
-            if(exCol) exCol.remove();
-
-            if(isAdmin) {
-                let th = document.createElement("th");
-                th.id = "adminHeaderCol";
-                th.className = "px-4 py-3 text-center bg-slate-900 text-amber-400 font-bold";
-                th.textContent = "Yönetici İşlemleri";
-                header.appendChild(th);
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            populateLoginUsers();
-
-            document.getElementById("txtTarih").innerText = new Date().toLocaleDateString('tr-TR');
-
-            const yazilabilirInputlar = [
-                document.getElementById("txtKalite"),
-                document.getElementById("txtEbat"),
-                document.getElementById("txtOtomasyonOlcum"),
-                document.getElementById("txtKKOlcum")
-            ];
-
-            yazilabilirInputlar.forEach(input => {
-                input.addEventListener("focus", () => {
-                    yazilabilirInputlar.forEach(i => i.classList.remove("focused-input"));
-                    input.classList.add("focused-input");
-                    seciliInput = input;
-                });
+            liste.forEach(item => {
+                excelHtml += `
+                    <tr style="text-align: center;">
+                        <td>${item.tarih}</td>
+                        <td style="background-color: #FEF08A; font-weight:bold;">${item.vardiya}</td>
+                        <td>${item.makina}</td>
+                        <td>${item.personel}</td>
+                        <td>${item.kalite}</td>
+                        <td>${item.ebat}</td>
+                        <td>${item.otomasyon}</td>
+                        <td>${item.kk}</td>
+                        <td style="font-weight: bold; color: #EF4444;">${item.fark}</td>
+                    </tr>
+                `;
             });
-        });
+            
+            excelHtml += `</table></body></html>`;
+
+            // Data URI ve İndirme Tetikleyicisi
+            let blob = new Blob([excelHtml], { type: 'application/vnd.ms-excel' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            
+            let dosyaAdi = `Boy_Otomasyon_Rapor_${raporSeciliYil}_${aylarIsimler[seciliFiltreAy]}_Hafta_${seciliFiltreHafta}.xls`;
+            a.href = url;
+            a.download = dosyaAdi;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showToast("Excel başarıyla oluşturuldu ve indirildi.", "success");
+            closeExcelModal();
+        }
+
+        function renderTablo() {
+            let tbody = document.getElementById('veriTablosu');
+            tbody.innerHTML = '';
+
+            db.forEach((item, index) => {
+                let tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-700/40 transition-colors";
+                
+                let oto = parseFloat(item.otomasyon) || 0;
+                let kkVal = parseFloat(item.kk) || 0;
+                let farkHesap = (oto - kkVal).toFixed(2);
+                let farkKlass = parseFloat(farkHesap) === 0 ? "text-emerald-400 font-bold" : "text-rose-400 font-bold bg-rose-950/20";
+
+                let aksiyonButonlari = '';
+                if(isAdmin) {
+                    aksiyonButonlari = `
+                        <td class="px-4 py-2 flex justify-center gap-1.5">
+                            <button onclick="satirDuzenle(${index})" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs px-2.5 py-1 rounded transition-all"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="satirSil(${index})" class="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs px-2.5 py-1 rounded transition-all"><i class="fa-solid fa-trash"></i></button>
+                        </td>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-medium">${item.tarih}</td>
+                    <td class="px-4 py-3 font-bold text-yellow-400 bg-slate-800/80 border-x border-slate-700">${item.vardiya}</td>
+                    <td class="px-4 py-3">${item.makina}</td>
+                    <td class="px-4 py-3 text-slate-400">${item.personel}</td>
+                    <td class="px-4 py-3 font-semibold text-white">${item.kalite}</td>
+                    <td class="px-4 py-3">${item.ebat}</td>
+                    <td class="px-4 py-3 text-cyan-400 font-mono">${oto}</td>
+                    <td class="px-4 py-3 text-amber-400 font-mono">${kkVal}</td>
+                    <td class="px-4 py-3 ${farkKlass}">${farkHesap} CM</td>
+                    ${aksiyonButonlari}
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function satirSil(idx) {
+            if(confirm("Bu ölçüm kaydını silmek istediğinize emin misiniz?")) {
+                db.splice(idx, 1);
+                localStorage.setItem(DB_KEY, JSON.stringify(db));
+                renderTablo();
+                showToast("Kayıt başarıyla silindi.", "info");
+            }
+        }
+
+        function satirDuzenle(idx) {
+            let item = db[idx];
+            document.getElementById('editIndex').value = idx;
+            document.getElementById('cmbMakinaNo').value = item.makina;
+            document.getElementById('txtKalite').value = item.kalite;
+            document.getElementById('txtEbat').value = item.ebat;
+            document.getElementById('txtOtomasyonOlcum').value = item.otomasyon;
+            document.getElementById('txtKKOlcum').value = item.kk;
+            canliFarkHesapla();
+            document.getElementById('lblOkButton').textContent = "GÜNCELLE";
+            document.getElementById('btnIptalDuzenle').classList.remove('hidden');
+        }
+
+        function iptalDuzenle() {
+            document.getElementById('editIndex').value = "-1";
+            document.getElementById('lblOkButton').textContent = "OK";
+            document.getElementById('btnIptalDuzenle').classList.add('hidden');
+            formuTemizle();
+        }
+
+        function formuTemizle() {
+            document.getElementById('cmbMakinaNo').value = '';
+            document.getElementById('txtKalite').value = '';
+            document.getElementById('txtEbat').value = '';
+            document.getElementById('txtOtomasyonOlcum').value = '';
+            document.getElementById('txtKKOlcum').value = '';
+            document.getElementById('lblCanliFark').textContent = '---';
+        }
 
         function inputTus(deger) {
-            if (!seciliInput) {
-                showToast("Lütfen önce veri girmek istediğiniz bir ölçüm kutusuna tıklayın!", "warning");
+            if(!seciliInput) return;
+            if((seciliInput.id === 'txtOtomasyonOlcum' || seciliInput.id === 'txtKKOlcum') && isNaN(deger) && deger !== '.') {
                 return;
             }
-            
-            if (deger === ".") {
-                if (seciliInput.id === "txtOtomasyonOlcum" || seciliInput.id === "txtKKOlcum") {
-                    if (seciliInput.value.includes(".") || seciliInput.value.includes(",")) return;
-                }
-            }
-            
             seciliInput.value += deger;
-            seciliInput.focus();
+            if(seciliInput.id === 'txtOtomasyonOlcum' || seciliInput.id === 'txtKKOlcum') {
+                validateSadeceSayi(seciliInput);
+            }
             canliFarkHesapla();
         }
 
         function inputSil() {
-            if (!seciliInput) return;
-            seciliInput.value = "";
-            seciliInput.focus();
+            if(!seciliInput) return;
+            seciliInput.value = seciliInput.value.slice(0, -1);
             canliFarkHesapla();
-        }
-
-        function parseFlexibleFloat(valStr) {
-            if (!valStr) return NaN;
-            let temizVal = valStr.toString().replace(/,/g, '.');
-            return parseFloat(temizVal);
         }
 
         function canliFarkHesapla() {
-            const otoVal = parseFlexibleFloat(document.getElementById("txtOtomasyonOlcum").value);
-            const kkVal = parseFlexibleFloat(document.getElementById("txtKKOlcum").value);
-            const lbl = document.getElementById("lblCanliFark");
-
-            if (!isNaN(otoVal) && !isNaN(kkVal)) {
-                let farkVal = kkVal - otoVal;
-                if (Math.abs(farkVal) < 0.0001) farkVal = 0; 
-                
-                const fark = farkVal.toFixed(2);
-                const isaret = farkVal > 0 ? "+" : ""; 
-                lbl.innerText = isaret + fark + " cm";
-                
-                if (farkVal === 0) {
-                    lbl.className = "text-base font-black text-emerald-400";
-                } else if (Math.abs(farkVal) <= 1) {
-                    lbl.className = "text-base font-black text-yellow-400";
-                } else {
-                    lbl.className = "text-base font-black text-rose-400";
-                }
-            } else {
-                lbl.innerText = "---";
-                lbl.className = "text-base font-black text-slate-400";
-            }
-        }
-
-        function checkDateAndShiftGap() {
-            if (db.length === 0) return { gapDetected: false, missingItems: [] };
-
-            let enEskiTarih = new Date();
-            db.forEach(d => {
-                let p = d.tarih.split('.');
-                let dt = new Date(p[2], p[1]-1, p[0]);
-                if(dt < enEskiTarih) enEskiTarih = dt;
-            });
-
-            const bugun = new Date();
-            bugun.setHours(0,0,0,0);
-            enEskiTarih.setHours(0,0,0,0);
-
-            const birGun = 24 * 60 * 60 * 1000;
-            const gunFarki = Math.round((bugun - enEskiTarih) / birGun);
-
-            let missingItems = [];
-            let tempDate = new Date(enEskiTarih);
-
-            for (let i = 0; i <= gunFarki; i++) {
-                if (tempDate.getDay() !== 0) { 
-                    let tarihStr = tempDate.toLocaleDateString('tr-TR');
-                    let oGununKayitlari = db.filter(d => d.tarih === tarihStr);
-                    
-                    let v0816Var = oGununKayitlari.some(d => d.vardiya === "08/16");
-                    let v1600Var = oGununKayitlari.some(d => d.vardiya === "16/00");
-
-                    if (!v0816Var) missingItems.push({ tarih: tarihStr, vardiya: "08/16" });
-                    if (!v1600Var) missingItems.push({ tarih: tarihStr, vardiya: "16/00" });
-                }
-                tempDate.setDate(tempDate.getDate() + 1);
-            }
-
-            return {
-                gapDetected: missingItems.length > 0,
-                missingItems: missingItems
-            };
-        }
-
-        function calculateMissingDays() {
-            const res = checkDateAndShiftGap();
-            const area = document.getElementById("missing-days-area");
-            if(res.gapDetected) {
-                area.innerHTML = `<div class="text-amber-400 font-bold mb-1"><i class="fa-solid fa-circle-exclamation"></i> Girişi Yapılmamış Eksik Vardiyalar:</div>`;
-                res.missingItems.slice(-15).forEach(item => {
-                    area.innerHTML += `<div class="border-b border-slate-800 pb-0.5">• <span class="text-white font-mono">${item.tarih}</span> günü <span class="text-cyan-400 font-bold">[${item.vardiya}]</span> vardiya kaydı eksik!</div>`;
-                });
-            } else {
-                area.innerHTML = `<div class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check"></i> Harika! Tüm günlerin çift vardiya kayıtları eksiksiz.</div>`;
-            }
-        }
-
-        function toggleMissingDaysPanel() {
-            const area = document.getElementById("missing-days-area");
-            calculateMissingDays();
-            area.classList.toggle("hidden");
-        }
-
-        function showWarningModalOnly(eksikler) {
-            const modal = document.getElementById("date-warning-modal");
-            const content = document.getElementById("date-warning-content");
-            content.innerHTML = `
-                <p class="text-amber-400 font-bold mb-2"><i class="fa-solid fa-clock mr-2"></i>Sistem Hafızasında Girişi Unutulmuş Vardiyalar Var:</p>
-                <ul class="list-disc list-inside pl-2 text-slate-300 font-mono text-sm space-y-1 bg-slate-900/80 p-3 rounded-xl border border-slate-700">
-                    ${eksikler.slice(-8).map(d => `<li>Tarih: <span class="text-white">${d.tarih}</span> -> Eksik: <span class="text-yellow-400 font-bold">${d.vardiya}</span></li>`).join('')}
-                </ul>
-            `;
-            modal.classList.remove("hidden");
-            playAlertSound();
+            let otoV = parseFloat(document.getElementById('txtOtomasyonOlcum').value.replace(',', '.'));
+            let kkV = parseFloat(document.getElementById('txtKKOlcum').value.replace(',', '.'));
+            let lbl = document.getElementById('lblCanliFark');
+            if(!isNaN(otoV) && !isNaN(kkV)) {
+                lbl.textContent = (otoV - kkV).toFixed(2) + " CM";
+            } else { lbl.textContent = "---"; }
         }
 
         function formKaydet() {
-            const elMakina = document.getElementById("cmbMakinaNo");
-            const elKalite = document.getElementById("txtKalite");
-            const elEbat = document.getElementById("txtEbat");
-            const elOtomasyon = document.getElementById("txtOtomasyonOlcum");
-            const elKK = document.getElementById("txtKKOlcum");
-            const editIdx = parseInt(document.getElementById("editIndex").value);
-
-            const tarih = document.getElementById("txtTarih").innerText;
-            const makina = elMakina.value;
-            const kalite = elKalite.value.trim();
-            const ebat = elEbat.value.trim();
-            const otomasyon = elOtomasyon.value.trim();
-            const kk = elKK.value.trim();
-
-            let eksikVar = false;
-            const alanlar = [
-                { el: elMakina, val: makina },
-                { el: elKalite, val: kalite },
-                { el: elEbat, val: ebat },
-                { el: elOtomasyon, val: otomasyon },
-                { el: elKK, val: kk }
+            let fields = [
+                { id: 'cmbMakinaNo', name: 'Makina No' },
+                { id: 'txtKalite', name: 'Halı Kalite İsmi' },
+                { id: 'txtEbat', name: 'Ebat Bilgisi' },
+                { id: 'txtOtomasyonOlcum', name: 'Otomasyon Ölçüm CM' },
+                { id: 'txtKKOlcum', name: 'K.K Ölçümü' }
             ];
 
-            alanlar.forEach(item => {
-                item.el.classList.remove("eksik-alan-animasyon");
-                if (!item.val) {
-                    eksikVar = true;
-                    void item.el.offsetWidth; 
-                    item.el.classList.add("eksik-alan-animasyon");
+            let bosAlanlar = [];
+            fields.forEach(f => document.getElementById(f.id).classList.remove('eksik-alan-animasyon'));
+
+            fields.forEach(f => {
+                let el = document.getElementById(f.id);
+                if (!el.value.trim()) {
+                    bosAlanlar.push(f);
+                    setTimeout(() => el.classList.add('eksik-alan-animasyon'), 10);
                 }
             });
 
-            if (eksikVar) {
-                showToast("Lütfen sarı renkle yanıp sönen boş alanları doldurunuz!", "warning");
+            if(bosAlanlar.length > 0) {
+                playAlertSound(300, 'sawtooth', 0.4);
+                showToast(`Lütfen boş bırakılan alanları doldurunuz! (${bosAlanlar.map(a => a.name).join(', ')})`, "error");
                 return;
             }
 
-            const numOto = parseFlexibleFloat(otomasyon);
-            const numKK = parseFlexibleFloat(kk);
-            let farkVal = numKK - numOto;
-            if (Math.abs(farkVal) < 0.0001) farkVal = 0;
+            let makina = document.getElementById('cmbMakinaNo').value;
+            let kalite = document.getElementById('txtKalite').value.trim();
+            let ebat = document.getElementById('txtEbat').value.trim();
+            let otomasyon = document.getElementById('txtOtomasyonOlcum').value.trim();
+            let kk = document.getElementById('txtKKOlcum').value.trim();
+            let editIdx = parseInt(document.getElementById('editIndex').value, 10);
 
-            const farkHesap = farkVal.toFixed(2);
-            const isaret = farkVal > 0 ? "+" : "";
-            const farkSonuc = isaret + farkHesap;
+            let otoNum = parseFloat(otomasyon.replace(',', '.'));
+            let kkNum = parseFloat(kk.replace(',', '.'));
+            let farkHesapli = (otoNum - kkNum).toFixed(2) + " CM";
 
-            if(editIdx >= 0) {
-                if(!isAdmin) { showToast("Yetkisiz İşlem!", "error"); return; }
-                
-                db[editIdx].makina = makina;
-                db[editIdx].kalite = kalite;
-                db[editIdx].ebat = ebat;
-                db[editIdx].otomasyon = otomasyon;
-                db[editIdx].kk = kk;
-                db[editIdx].sonuc = farkSonuc;
-
-                persistDB();
-                showCustomModal("BAŞARILI", `Ölçüm kaydı güncellendi.<br><span class="text-cyan-400 font-bold">${makina} - ${kalite}</span>`, "success", "KAPAT");
-                document.getElementById("editIndex").value = "-1";
-                document.getElementById("lblOkButton").textContent = "OK";
-            } else {
-                geciciKayıtData = { tarih, vardiya: activeVardiya, makina, personel: activeUser, kalite, ebat, otomasyon, kk, sonuc: farkSonuc };
-                db.unshift(geciciKayıtData);
-                persistDB();
-                showCustomModal("KAYIT BAŞARILI", `Ölçüm verisi sisteme başarıyla işlendi.<br><span class="text-cyan-400 font-bold">${makina} - ${kalite}</span>`, "success", "DEVAM ET");
-            }
-
-            tabloGuncelle();
-            calculateMissingDays();
-
-            elMakina.value = "";
-            elKalite.value = "";
-            elEbat.value = "";
-            elOtomasyon.value = "";
-            elKK.value = "";
-            document.getElementById("lblCanliFark").innerText = "---";
-            document.getElementById("lblCanliFark").className = "text-base font-black text-slate-400";
-            
-            if (seciliInput) seciliInput.classList.remove("focused-input");
-            seciliInput = null;
-            geciciKayıtData = null;
-            document.getElementById("btnIptalDuzenle").classList.add("hidden");
-        }
-
-        function iptalDuzenle() {
-            document.getElementById("editIndex").value = "-1";
-            document.getElementById("lblOkButton").textContent = "OK";
-            document.getElementById("btnIptalDuzenle").classList.add("hidden");
-
-            document.getElementById("cmbMakinaNo").value = "";
-            document.getElementById("txtKalite").value = "";
-            document.getElementById("txtEbat").value = "";
-            document.getElementById("txtOtomasyonOlcum").value = "";
-            document.getElementById("txtKKOlcum").value = "";
-            document.getElementById("lblCanliFark").innerText = "---";
-            document.getElementById("lblCanliFark").className = "text-base font-black text-slate-400";
-            showToast("Düzenleme iptal edildi.", "info");
-        }
-
-        function closeWarningModal() {
-            document.getElementById("date-warning-modal").classList.add("hidden");
-        }
-
-        function adminKayitSil(index) {
-            if(!isAdmin) { showToast("Bu işlemi yapmaya yetkiniz yok!", "error"); return; }
-            
-            showCustomModal("KAYIT SİLME ONAYI", `Bu ölçüm kaydını kalıcı olarak silmek istediğinize emin misiniz?`, "error", "EVET, KESİN SİL");
-            document.getElementById('modal-btn').onclick = function() {
-                db.splice(index, 1);
-                persistDB();
-                tabloGuncelle();
-                calculateMissingDays();
-                closeCustomModal();
-                showToast("Ölçüm kaydı sistemden kalıcı olarak silindi.", "success");
+            let yeniKayıt = {
+                tarih: document.getElementById('txtTarih').textContent,
+                vardiya: activeVardiya,
+                makina: makina,
+                personel: activeUser,
+                kalite: kalite,
+                ebat: ebat,
+                otomasyon: otoNum,
+                kk: kkNum,
+                fark: farkHesapli
             };
-        }
 
-        function adminKayitDuzenle(index) {
-            if(!isAdmin) { showToast("Bu işlemi yapmaya yetkiniz yok!", "error"); return; }
-            const veri = db[index];
-            
-            document.getElementById("cmbMakinaNo").value = veri.makina;
-            document.getElementById("txtKalite").value = veri.kalite;
-            document.getElementById("txtEbat").value = veri.ebat;
-            document.getElementById("txtOtomasyonOlcum").value = veri.otomasyon;
-            document.getElementById("txtKKOlcum").value = veri.kk;
-            document.getElementById("editIndex").value = index;
-            document.getElementById("lblOkButton").textContent = "GÜNCELLE";
-            document.getElementById("btnIptalDuzenle").classList.remove("hidden");
-            
-            canliFarkHesapla();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            showCustomModal("DÜZENLEME MODU", "Kayıt verileri forma yüklendi. Değişiklikleri yapıp yeşil <strong>OK (GÜNCELLE)</strong> tuşuna basınız.", "info", "FORMA GİT");
-        }
-
-        function tabloGuncelle() {
-            const tbody = document.getElementById("veriTablosu");
-            tbody.innerHTML = "";
-            let colCount = isAdmin ? 10 : 9;
-
-            if (db.length === 0) {
-                tbody.innerHTML = `<tr id="bosSatir"><td colspan="${colCount}" class="text-center py-4 text-slate-500">Sistemde henüz bir ölçüm kaydı bulunmuyor.</td></tr>`;
-                return;
+            if(editIdx === -1) {
+                db.unshift(yeniKayıt);
+            } else {
+                db[editIdx] = yeniKayıt;
+                iptalDuzenle();
             }
 
-            db.forEach((veri, index) => {
-                const row = document.createElement("tr");
-                row.className = "bg-slate-800 border-b border-slate-700 hover:bg-slate-700 transition-colors";
+            localStorage.setItem(DB_KEY, JSON.stringify(db));
+            renderTablo();
+            formuTemizle();
+            showToast("Veri başarıyla veritabanına kaydedildi.", "success");
+        }
+
+        // PERSONEL EKLEME VE YÖNETİM MODÜLÜ
+        function verifyHkAdmin() {
+            let pass = document.getElementById('hkAuthPass').value.trim();
+            if(pass === "210821") {
+                document.getElementById('adminManagementArea').style.display = 'block';
+                renderUserMgmtTable();
+            } else { showToast("Hatalı Yetki Şifresi!", "error"); }
+        }
+
+        function renderUserMgmtTable() {
+            let tbody = document.getElementById('userMgmtTableBody');
+            tbody.innerHTML = '';
+            usersCache.forEach((u, i) => {
+                let silButonu = u.role === 'admin' ? 
+                    `<span class="text-xs text-slate-500 font-bold">Kilitli</span>` : 
+                    `<button onclick="deleteStaff(${i})" class="bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-2 py-1 rounded"><i class="fa-solid fa-trash"></i> Sil</button>`;
                 
-                let numSonuc = parseFlexibleFloat(veri.sonuc);
-                let farkRengi = "text-slate-300";
-                if(numSonuc > 0) farkRengi = "text-emerald-400 font-black";
-                else if(numSonuc < 0) farkRengi = "text-rose-400 font-black";
-
-                let htmlContent = `
-                    <td class="px-4 py-3 font-medium">${veri.tarih}</td>
-                    <td class="px-4 py-3 font-bold text-yellow-400 bg-slate-900/20">${veri.vardiya || '---'}</td>
-                    <td class="px-4 py-3 text-cyan-400 font-bold">${veri.makina}</td>
-                    <td class="px-4 py-3">${veri.personel}</td>
-                    <td class="px-4 py-3 font-semibold text-slate-200">${veri.kalite}</td>
-                    <td class="px-4 py-3 font-mono text-slate-100">${veri.ebat}</td>
-                    <td class="px-4 py-3 font-mono text-yellow-400 font-bold">${veri.otomasyon}</td>
-                    <td class="px-4 py-3 font-mono text-emerald-400 font-bold">${veri.kk}</td>
-                    <td class="px-4 py-3 font-mono ${farkRengi} bg-slate-900/30">${veri.sonuc} cm</td>
-                `;
-
-                if(isAdmin) {
-                    htmlContent += `
-                        <td class="px-4 py-3 bg-slate-900/40 flex justify-center gap-2">
-                            <button onclick="adminKayitDuzenle(${index})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-1 px-2.5 rounded text-xs transition-all"><i class="fa-solid fa-pen-to-square"></i> Düzenle</button>
-                            <button onclick="adminKayitSil(${index})" class="bg-red-500 hover:bg-red-400 text-white font-bold py-1 px-2.5 rounded text-xs transition-all"><i class="fa-solid fa-trash"></i> Sil</button>
-                        </td>
-                    `;
-                }
-
-                row.innerHTML = htmlContent;
-                tbody.appendChild(row);
-            });
-        }
-
-        function excelIndir() {
-            if (db.length === 0) {
-                showToast("İndirilecek herhangi bir rapor verisi bulunamadı!", "warning");
-                return;
-            }
-
-            let excelTemplate = `
-            <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-            <head>
-                <meta charset="UTF-8">
-                <!--[if gte mso 9]>
-                <xml>
-                    <x:ExcelWorkbook>
-                        <x:ExcelWorksheets>
-                            <x:ExcelWorksheet>
-                                <x:Name>Vardiyalı Rapor Listesi</x:Name>
-                                <x:WorksheetOptions>
-                                    <x:DisplayGridlines/>
-                                </x:WorksheetOptions>
-                            </x:ExcelWorksheet>
-                        </x:ExcelWorksheets>
-                    </x:ExcelWorkbook>
-                </xml>
-                <![endif]-->
-                <style>
-                    .th-stil { font-size: 13pt !important; font-weight: bold; background-color: #1E3A8A; color: #FFFFFF; text-align: center !important; vertical-align: middle; height: 38px; border: 1px solid #334155; }
-                    .td-stil { font-size: 11pt; text-align: center !important; vertical-align: middle; height: 28px; border: 0.5px solid #CBD5E1; }
-                </style>
-            </head>
-            <body>
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="th-stil" style="width:130px;">TARİH</th>
-                            <th class="th-stil" style="width:120px; background-color:#D97706;">VARDİYA</th>
-                            <th class="th-stil" style="width:130px;">MAKİNA NO</th>
-                            <th class="th-stil" style="width:200px;">KONTROL PERSONELİ</th>
-                            <th class="th-stil" style="width:180px;">HALI KALİTE İSMİ</th>
-                            <th class="th-stil" style="width:130px;">EBAT BİLGİSİ</th>
-                            <th class="th-stil" style="width:170px;">OTOMASYON ÖLÇÜM (CM)</th>
-                            <th class="th-stil" style="width:160px;">K.K ÖLÇÜM SONUCU</th>
-                            <th class="th-stil" style="width:155px; background-color:#312E81; color:#22D3EE;">SONUÇ (FARK)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            db.forEach(veri => {
-                excelTemplate += `
+                tbody.innerHTML += `
                     <tr>
-                        <td class="td-stil" align="center">${veri.tarih}</td>
-                        <td class="td-stil" align="center" style="font-weight:bold; color:#B45309; background-color:#FEF3C7; text-align: center !important;">${veri.vardiya || '---'}</td>
-                        <td class="td-stil" align="center" style="font-weight:bold; color:#1D4ED8; text-align: center !important;">${veri.makina}</td>
-                        <td class="td-stil" align="center">${veri.personel}</td>
-                        <td class="td-stil" align="center">${veri.kalite}</td>
-                        <td class="td-stil" align="center" style="text-align: center !important;">${veri.ebat}</td>
-                        <td class="td-stil" align="center" style="font-weight:bold; color:#B45309; text-align: center !important;">${veri.otomasyon}</td>
-                        <td class="td-stil" align="center" style="font-weight:bold; color:#047857; text-align: center !important;">${veri.kk}</td>
-                        <td class="td-stil" align="center" style="font-weight:bold; color:#4338CA; background-color:#F5F5F7; text-align: center !important;">${veri.sonuc} cm</td>
+                        <td>${u.name}</td>
+                        <td>${u.pass}</td>
+                        <td>${silButonu}</td>
                     </tr>
                 `;
             });
-
-            excelTemplate += `
-                    </tbody>
-                </table>
-            </body>
-            </html>
-            `;
-
-            const blob = new Blob(['\ufeff' + excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            
-            const tarihDamgası = new Date().toISOString().slice(0,10);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `Vardiyali_Boy_Otomasyon_Raporu_${tarihDamgası}.xls`);
-            link.style.visibility = 'hidden';
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast("Excel raporu indirildi.", "success");
         }
+
+        function addNewStaff() {
+            let name = document.getElementById('newStaffName').value.trim();
+            let pass = document.getElementById('newStaffPass').value.trim();
+
+            if(!name || !pass) {
+                showToast("Lütfen yeni personel adı ve şifresini yazınız!", "warning");
+                return;
+            }
+
+            usersCache.push({ name: name, pass: pass, role: "staff" });
+            localStorage.setItem(USERS_KEY, JSON.stringify(usersCache));
+            
+            document.getElementById('newStaffName').value = '';
+            document.getElementById('newStaffPass').value = '';
+            
+            renderUserMgmtTable();
+            populateLoginUsers();
+            showToast("Yeni personel başarıyla eklendi.", "success");
+        }
+
+        function deleteStaff(index) {
+            if(confirm("Bu personeli silmek istediğinize emin misiniz?")) {
+                usersCache.splice(index, 1);
+                localStorage.setItem(USERS_KEY, JSON.stringify(usersCache));
+                renderUserMgmtTable();
+                populateLoginUsers();
+                showToast("Personel sistemden silindi.", "info");
+            }
+        }
+
+        const inputsList = ['txtKalite', 'txtEbat', 'txtOtomasyonOlcum', 'txtKKOlcum'];
+        inputsList.forEach(id => {
+            document.getElementById(id).addEventListener('focus', function() {
+                seciliInput = this;
+                inputsList.forEach(k => document.getElementById(k).classList.remove('focused-input'));
+                this.classList.add('focused-input');
+            });
+        });
+
+        function switchLoginView(toCrypto) {
+            document.getElementById('boxLogin').style.display = toCrypto ? 'none' : 'block';
+            document.getElementById('boxCrypto').style.display = toCrypto ? 'block' : 'none';
+        }
+
+        window.onload = function() { populateLoginUsers(); };
     </script>
 </body>
 </html>
